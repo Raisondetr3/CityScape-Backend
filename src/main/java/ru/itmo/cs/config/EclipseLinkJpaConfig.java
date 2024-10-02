@@ -15,9 +15,11 @@ import org.springframework.transaction.jta.JtaTransactionManager;
 import javax.sql.DataSource;
 
 @Configuration
-public class EclipseLinkJpaConfiguration extends JpaBaseConfiguration {
+public class EclipseLinkJpaConfig extends JpaBaseConfiguration {
 
-    protected EclipseLinkJpaConfiguration(DataSource dataSource, JpaProperties properties, ObjectProvider<JtaTransactionManager> jtaTransactionManager) {
+    protected EclipseLinkJpaConfig(DataSource dataSource,
+                                   JpaProperties properties,
+                                   ObjectProvider<JtaTransactionManager> jtaTransactionManager) {
         super(dataSource, properties, jtaTransactionManager);
     }
 
@@ -29,9 +31,9 @@ public class EclipseLinkJpaConfiguration extends JpaBaseConfiguration {
     @Override
     protected Map<String, Object> getVendorProperties() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put(PersistenceUnitProperties.WEAVING, "true"); // Включаем Weaving для EclipseLink
-        map.put(PersistenceUnitProperties.DDL_GENERATION, "drop-and-create-tables"); // Настройка генерации схемы БД
-        map.put(PersistenceUnitProperties.LOGGING_LEVEL, "FINE"); // Уровень логирования
+        map.put(PersistenceUnitProperties.WEAVING, "true");
+        map.put(PersistenceUnitProperties.DDL_GENERATION, "drop-and-create-tables");
+        map.put(PersistenceUnitProperties.LOGGING_LEVEL, "FINE");
         return map;
     }
 }
