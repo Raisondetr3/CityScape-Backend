@@ -1,15 +1,15 @@
 package ru.itmo.cs.entity;
 
-import com.sun.istack.NotNull;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 @Entity
-@Table(name = "coordinates")
+@Table(name = "coordinates", schema = "s367911")
 @Getter
 @Setter
 @NoArgsConstructor

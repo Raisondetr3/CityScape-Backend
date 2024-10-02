@@ -1,8 +1,8 @@
 package ru.itmo.cs.entity;
 
-import com.sun.istack.NotNull;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "city")
+@Table(name = "city", schema = "s367911")
 @Getter
 @Setter
 @NoArgsConstructor

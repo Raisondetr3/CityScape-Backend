@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "user")
+@Table(name = "\"user\"", schema = "s367911")
 @Getter
 @Setter
 @NoArgsConstructor
