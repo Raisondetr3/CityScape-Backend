@@ -15,6 +15,8 @@ public class CityScape {
         System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
         System.setProperty("DB_DRIVER", dotenv.get("DB_DRIVER"));
         System.setProperty("DB_DIALECT", dotenv.get("DB_DIALECT"));
+        System.setProperty("JWT_SECRET_KEY", dotenv.get("JWT_SECRET_KEY"));
+        System.setProperty("JWT_EXPIRATION_TIME", dotenv.get("JWT_EXPIRATION_TIME"));
 
         SpringApplication.run(CityScape.class, args);
     }
