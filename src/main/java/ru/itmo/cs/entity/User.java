@@ -35,6 +35,7 @@ public class User implements UserDetails {
     @NotNull
     private UserRole role;
 
+    // Flag to track whether the user has requested administrator privileges
     @NotNull
     private boolean pendingAdminApproval = false;
 

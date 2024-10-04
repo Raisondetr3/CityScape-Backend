@@ -3,7 +3,6 @@ package ru.itmo.cs.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,27 +21,29 @@ public class City {
     private Long id;
 
     @NotNull
-    @Size(min = 1)
+    @Column(name = "name")
     private String name;
 
+    @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "coordinate_id", referencedColumnName = "id")
-    @NotNull
     private Coordinates coordinates;
 
-    @NotNull
+    @Column(nullable = false)
     private LocalDate creationDate = LocalDate.now();
 
+    @NotNull
+    @Column(name = "area")
     @Min(1)
     private double area;
 
-    @NotNull
+    @Column(nullable = false)
     @Min(1)
     private Long population;
 
     private LocalDateTime establishmentDate;
 
-    @NotNull
+    @Column(nullable = false)
     private Boolean capital;
 
     private long metersAboveSeaLevel;
@@ -50,16 +51,21 @@ public class City {
     @Enumerated(EnumType.STRING)
     private Climate climate;
 
-    @NotNull
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Government government;
 
     @Enumerated(EnumType.STRING)
     private StandardOfLiving standardOfLiving;
 
+    @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "governor_id", referencedColumnName = "id")
-    @NotNull
     private Human governor;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "created_by", referencedColumnName = "id")
+    private User createdBy;
 }
 

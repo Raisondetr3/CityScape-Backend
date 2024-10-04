@@ -3,6 +3,7 @@ package ru.itmo.cs.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.cs.dto.UserLoginDTO;
 import ru.itmo.cs.dto.UserRegistrationDTO;
 import ru.itmo.cs.dto.AdminApprovalDTO;
+import ru.itmo.cs.entity.City;
 import ru.itmo.cs.entity.User;
 import ru.itmo.cs.entity.UserRole;
 import ru.itmo.cs.repository.UserRepository;
@@ -22,7 +24,7 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtUtil;
+    private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
     @Transactional
@@ -48,7 +50,7 @@ public class UserService implements UserDetailsService {
 
         UserDetails userDetails = loadUserByUsername(loginDTO.getUsername());
 
-        return jwtUtil.generateToken(userDetails);
+        return jwtService.generateToken(userDetails);
     }
 
     @Override
@@ -83,5 +85,16 @@ public class UserService implements UserDetailsService {
         user.setPendingAdminApproval(false);
 
         return userRepository.save(user);
+    }
+
+    public User getCurrentUser() {
+        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    }
+
+    public boolean canModifyCity(City city) {
+        User currentUser = getCurrentUser();
+        return city.getCreatedBy().equals(currentUser) || currentUser.getRole() == UserRole.ADMIN;
     }
 }
