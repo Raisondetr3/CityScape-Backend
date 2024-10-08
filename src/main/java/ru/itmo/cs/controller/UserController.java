@@ -15,7 +15,7 @@ import ru.itmo.cs.service.JwtService;
 import ru.itmo.cs.service.UserService;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -31,7 +31,8 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthLoginResponseDTO> loginUser(@RequestBody UserLoginDTO input) {
-        String token = userService.login(input);
+        User authenticatedUser = userService.login(input);
+        String token = jwtService.generateToken(authenticatedUser);
 
         AuthLoginResponseDTO authLoginResponseDTO = AuthLoginResponseDTO.builder()
                 .token(token)
