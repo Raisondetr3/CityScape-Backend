@@ -7,16 +7,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.itmo.cs.dto.AdminApprovalDTO;
+import ru.itmo.cs.dto.AuthLoginResponseDTO;
 import ru.itmo.cs.dto.UserLoginDTO;
 import ru.itmo.cs.dto.UserRegistrationDTO;
+import ru.itmo.cs.entity.User;
+import ru.itmo.cs.service.JwtService;
 import ru.itmo.cs.service.UserService;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+
+    private final JwtService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserRegistrationDTO registrationDTO) {
@@ -25,9 +30,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody UserLoginDTO loginDTO) {
-        String token = userService.login(loginDTO);
-        return ResponseEntity.ok(token);
+    public ResponseEntity<AuthLoginResponseDTO> loginUser(@RequestBody UserLoginDTO input) {
+        String token = userService.login(input);
+
+        AuthLoginResponseDTO authLoginResponseDTO = AuthLoginResponseDTO.builder()
+                .token(token)
+                .expiresIn(jwtService.getExpirationTime())
+                .build();
+        return ResponseEntity.ok(authLoginResponseDTO);
     }
 
     @PostMapping("/request-admin")

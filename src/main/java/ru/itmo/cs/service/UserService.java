@@ -1,5 +1,6 @@
 package ru.itmo.cs.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +20,7 @@ import ru.itmo.cs.entity.UserRole;
 import ru.itmo.cs.repository.UserRepository;
 
 @Service
+@Slf4j
 public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
@@ -60,16 +62,17 @@ public class UserService implements UserDetailsService {
         return userRepository.save(newUser);
     }
 
-    public String login(UserLoginDTO loginDTO) {
+    @Transactional
+    public User login(UserLoginDTO input) {
+        log.info("authenticate() started");
+        System.out.println(passwordEncoder.encode("password123"));
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginDTO.getUsername(),
-                        loginDTO.getPassword())
-        );
+                        input.getUsername(),
+                        input.getPassword()));
+        log.info("authenticate() ended");
 
-        UserDetails userDetails = loadUserByUsername(loginDTO.getUsername());
-
-        return jwtService.generateToken(userDetails);
+        return userRepository.findByUsername(input.getUsername()).orElseThrow();
     }
 
     @Override
@@ -107,10 +110,16 @@ public class UserService implements UserDetailsService {
     }
 
     public User getCurrentUser() {
-        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails) principal).getUsername();
+            return userRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        } else {
+            throw new IllegalStateException("Authentication principal is not of type UserDetails");
+        }
     }
+
 
     public boolean canModifyCity(City city) {
         User currentUser = getCurrentUser();
