@@ -6,6 +6,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.itmo.cs.service.AuditService;
+import ru.itmo.cs.util.ApplicationContextProvider;
+
+import java.util.List;
 
 
 @Entity
@@ -24,4 +28,26 @@ public class Coordinates {
 
     @NotNull
     private Double y;
+
+    @OneToMany(mappedBy = "coordinates", cascade = CascadeType.ALL)
+    private List<City> cities;
+
+    @PrePersist
+    public void onPrePersist() {
+        AuditService auditService = ApplicationContextProvider.getBean(AuditService.class);
+        auditService.auditCoordinates(this, AuditOperation.CREATE);
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        AuditService auditService = ApplicationContextProvider.getBean(AuditService.class);
+        auditService.auditCoordinates(this, AuditOperation.UPDATE);
+    }
+
+    @PreRemove
+    public void onPreRemove() {
+        AuditService auditService = ApplicationContextProvider.getBean(AuditService.class);
+        auditService.auditCoordinates(this, AuditOperation.DELETE);
+    }
 }
+
