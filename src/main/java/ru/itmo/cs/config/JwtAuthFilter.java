@@ -4,6 +4,7 @@ import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,27 +18,27 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.itmo.cs.service.JwtService;
-import ru.itmo.cs.service.UserService;
 
 
 @Component
+@RequiredArgsConstructor
 @Log4j2
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
 
-    @Autowired
-    public void setJwtUtil(JwtService jwtService) {
-        this.jwtService = jwtService;
-    }
-
-    @Autowired
-    private void setUserDetailsService(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+//    @Autowired
+//    public void setJwtService(JwtService jwtService) {
+//        this.jwtService = jwtService;
+//    }
+//
+//    @Autowired
+//    private void setUserDetailsService(UserDetailsService userDetailsService) {
+//        this.userDetailsService = userDetailsService;
+//    }
 
     @Override
     @SneakyThrows
