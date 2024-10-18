@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "city", schema = "s367911")
@@ -66,6 +67,9 @@ public class City {
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
+
+    @OneToMany(mappedBy = "city", cascade = CascadeType.REMOVE)
+    private List<CityAudit> audits;
 }
 
 

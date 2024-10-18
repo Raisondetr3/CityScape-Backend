@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.cs.dto.HumanDTO;
 import ru.itmo.cs.entity.AuditOperation;
-import ru.itmo.cs.entity.Coordinates;
 import ru.itmo.cs.entity.Human;
+import ru.itmo.cs.exception.EntityDeletionException;
 import ru.itmo.cs.repository.HumanRepository;
 import ru.itmo.cs.util.EntityMapper;
 
@@ -45,8 +45,8 @@ public class HumanService {
     }
 
     @Transactional
-    public HumanDTO updateHuman(Long id, HumanDTO humanDTO) {
-        Human human = humanRepository.findById(id)
+    public HumanDTO updateHuman(HumanDTO humanDTO) {
+        Human human = humanRepository.findById(humanDTO.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Human not found"));
 
         human.setName(humanDTO.getName());
@@ -59,6 +59,28 @@ public class HumanService {
         return entityMapper.toHumanDTO(savedHuman);
     }
 
+    @Transactional
+    public Human createOrUpdateHumanForCity(HumanDTO humanDTO) {
+        // Determining whether to create a new object or update an existing one
+        if (humanDTO.getId() != null) {
+            Human existingHuman = humanRepository.findById(humanDTO.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Human not found"));
+
+            existingHuman.setName(humanDTO.getName());
+            existingHuman.setAge(humanDTO.getAge());
+            existingHuman.setHeight(humanDTO.getHeight());
+            existingHuman.setBirthday(humanDTO.getBirthday());
+
+            Human savedHuman = humanRepository.save(existingHuman);
+            auditService.auditHuman(savedHuman, AuditOperation.UPDATE);
+            return savedHuman;
+        } else {
+            Human human = entityMapper.toHumanEntity(humanDTO);
+            Human savedHuman = humanRepository.save(human);
+            auditService.auditHuman(savedHuman, AuditOperation.CREATE);
+            return savedHuman;
+        }
+    }
 
     @Transactional
     public void deleteHuman(Long id) {
@@ -66,10 +88,9 @@ public class HumanService {
                 .orElseThrow(() -> new IllegalArgumentException("Human not found"));
 
         if (!human.getCities().isEmpty()) {
-            throw new IllegalArgumentException("Cannot delete human, it's associated with a city");
+            throw new EntityDeletionException("Cannot delete Human as it is associated with one or more Cities.");
         }
 
-        auditService.auditHuman(human, AuditOperation.DELETE);
         humanRepository.delete(human);
     }
 }

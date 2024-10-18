@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CoordinatesDTO {
+    private Long id;
 
     @NotNull
     @Max(820)

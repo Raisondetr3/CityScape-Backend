@@ -29,5 +29,8 @@ public class Coordinates {
 
     @OneToMany(mappedBy = "coordinates")
     private List<City> cities;
+
+    @OneToMany(mappedBy = "coordinates", cascade = CascadeType.REMOVE)
+    private List<CoordinatesAudit> audits;
 }
 

@@ -13,6 +13,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HumanDTO {
+    private Long id;
     @NotNull
     @Size(min = 1)
     private String name;

@@ -36,5 +36,8 @@ public class Human {
 
     @OneToMany(mappedBy = "governor")
     private List<City> cities;
+
+    @OneToMany(mappedBy = "human", cascade = CascadeType.REMOVE)
+    private List<HumanAudit> audits;
 }
 

@@ -32,8 +32,8 @@ public class CoordinatesController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CoordinatesDTO> updateCoordinates(@PathVariable Long id, @RequestBody CoordinatesDTO coordinatesDTO) {
-        return ResponseEntity.ok(coordinatesService.updateCoordinates(id, coordinatesDTO));
+    public ResponseEntity<CoordinatesDTO> updateCoordinates(@RequestBody CoordinatesDTO coordinatesDTO) {
+        return ResponseEntity.ok(coordinatesService.updateCoordinates( coordinatesDTO));
     }
 
     @DeleteMapping("/{id}")

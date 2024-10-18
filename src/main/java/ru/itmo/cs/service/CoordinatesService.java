@@ -1,11 +1,13 @@
 package ru.itmo.cs.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.cs.dto.CoordinatesDTO;
 import ru.itmo.cs.entity.AuditOperation;
 import ru.itmo.cs.entity.Coordinates;
+import ru.itmo.cs.exception.EntityDeletionException;
 import ru.itmo.cs.repository.CoordinatesRepository;
 import ru.itmo.cs.util.EntityMapper;
 
@@ -13,11 +15,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class CoordinatesService {
-    private final CoordinatesRepository coordinatesRepository;
-    private final EntityMapper entityMapper;
-    private final AuditService auditService;
+    private CoordinatesRepository coordinatesRepository;
+    private EntityMapper entityMapper;
+    private AuditService auditService;
+
+    @Autowired
+    public void setCoordinatesRepository(CoordinatesRepository coordinatesRepository) {
+        this.coordinatesRepository = coordinatesRepository;
+    }
+
+    @Autowired
+    public void setEntityMapper(EntityMapper entityMapper) {
+        this.entityMapper = entityMapper;
+    }
+
+    @Autowired
+    public void setAuditService(AuditService auditService) {
+        this.auditService = auditService;
+    }
 
     @Transactional(readOnly = true)
     public List<CoordinatesDTO> getAllCoordinates() {
@@ -43,8 +59,8 @@ public class CoordinatesService {
     }
 
     @Transactional
-    public CoordinatesDTO updateCoordinates(Long id, CoordinatesDTO coordinatesDTO) {
-        Coordinates coordinates = coordinatesRepository.findById(id)
+    public CoordinatesDTO updateCoordinates( CoordinatesDTO coordinatesDTO) {
+        Coordinates coordinates = coordinatesRepository.findById(coordinatesDTO.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Coordinates not found"));
 
         coordinates.setX(coordinatesDTO.getX());
@@ -57,7 +73,26 @@ public class CoordinatesService {
         return entityMapper.toCoordinatesDTO(savedCoordinates);
     }
 
+    @Transactional
+    public Coordinates createOrUpdateCoordinatesForCity(CoordinatesDTO coordinatesDTO) {
+        // Determining whether to create a new object or update an existing one
+        if (coordinatesDTO.getId() != null) {
+            Coordinates existingCoordinates = coordinatesRepository.findById(coordinatesDTO.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Coordinates not found"));
 
+            existingCoordinates.setX(coordinatesDTO.getX());
+            existingCoordinates.setY(coordinatesDTO.getY());
+
+            Coordinates savedCoordinates = coordinatesRepository.save(existingCoordinates);
+            auditService.auditCoordinates(savedCoordinates, AuditOperation.UPDATE);
+            return savedCoordinates;
+        } else {
+            Coordinates coordinates = entityMapper.toCoordinatesEntity(coordinatesDTO);
+            Coordinates savedCoordinates = coordinatesRepository.save(coordinates);
+            auditService.auditCoordinates(savedCoordinates, AuditOperation.CREATE);
+            return savedCoordinates;
+        }
+    }
 
 
     @Transactional
@@ -66,10 +101,8 @@ public class CoordinatesService {
                 .orElseThrow(() -> new IllegalArgumentException("Coordinates not found"));
 
         if (!coordinates.getCities().isEmpty()) {
-            throw new IllegalArgumentException("Cannot delete coordinates, it's associated with a city");
+            throw new EntityDeletionException("Cannot delete Coordinates as it is associated with one or more Cities.");
         }
-
-        auditService.auditCoordinates(coordinates, AuditOperation.DELETE);
 
         coordinatesRepository.delete(coordinates);
     }

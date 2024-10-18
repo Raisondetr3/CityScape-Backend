@@ -1,6 +1,5 @@
 package ru.itmo.cs.util;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.itmo.cs.dto.CityDTO;
@@ -55,6 +54,7 @@ public class EntityMapper {
 
     public HumanDTO toHumanDTO(Human human) {
         return new HumanDTO(
+                human.getId(),
                 human.getName(),
                 human.getAge(),
                 human.getHeight(),
@@ -64,11 +64,11 @@ public class EntityMapper {
 
     public CoordinatesDTO toCoordinatesDTO(Coordinates coordinates) {
         return new CoordinatesDTO(
+                coordinates.getId(),
                 coordinates.getX(),
                 coordinates.getY()
         );
     }
-
 
     public City toCityEntity(CityDTO cityDTO, Coordinates coordinates, Human governor) {
         City city = new City();

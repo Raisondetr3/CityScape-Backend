@@ -28,7 +28,7 @@ public class CityAudit {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "operation", nullable = false)
-    private AuditOperation operation; // CREATE, UPDATE, DELETE
+    private AuditOperation operation; // CREATE, UPDATE
 
     @Column(name = "operation_time", nullable = false)
     private LocalDateTime operationTime;

@@ -32,8 +32,8 @@ public class HumanController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HumanDTO> updateHuman(@PathVariable Long id, @RequestBody HumanDTO humanDTO) {
-        return ResponseEntity.ok(humanService.updateHuman(id, humanDTO));
+    public ResponseEntity<HumanDTO> updateHuman(@RequestBody HumanDTO humanDTO) {
+        return ResponseEntity.ok(humanService.updateHuman(humanDTO));
     }
 
     @DeleteMapping("/{id}")
