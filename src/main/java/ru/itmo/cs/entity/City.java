@@ -6,8 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.itmo.cs.service.AuditService;
-import ru.itmo.cs.util.ApplicationContextProvider;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,10 +24,9 @@ public class City {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "coordinate_id", nullable = false)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "coordinate_id")
     private Coordinates coordinates;
-
 
     @Column(nullable = false)
     private LocalDate creationDate = LocalDate.now();
@@ -61,7 +58,7 @@ public class City {
     private StandardOfLiving standardOfLiving;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "governor_id")
     private Human governor;
 
@@ -69,23 +66,6 @@ public class City {
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
-
-    @PrePersist
-    public void onPrePersist() {
-        AuditService auditService = ApplicationContextProvider.getBean(AuditService.class);
-        auditService.auditCity(this, AuditOperation.CREATE);
-    }
-
-    @PreUpdate
-    public void onPreUpdate() {
-        AuditService auditService = ApplicationContextProvider.getBean(AuditService.class);
-        auditService.auditCity(this, AuditOperation.UPDATE);
-    }
-
-    @PreRemove
-    public void onPreRemove() {
-        AuditService auditService = ApplicationContextProvider.getBean(AuditService.class);
-        auditService.auditCity(this, AuditOperation.DELETE);
-    }
 }
+
 

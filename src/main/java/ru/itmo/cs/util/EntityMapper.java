@@ -3,19 +3,37 @@ package ru.itmo.cs.util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import ru.itmo.cs.dto.CityDTO;
 import ru.itmo.cs.dto.CoordinatesDTO;
 import ru.itmo.cs.dto.HumanDTO;
 import ru.itmo.cs.entity.*;
+import ru.itmo.cs.service.CoordinatesService;
+import ru.itmo.cs.service.HumanService;
 import ru.itmo.cs.service.UserService;
 
 import java.time.LocalDateTime;
 
 @Component
-@RequiredArgsConstructor
 public class EntityMapper {
-    public final UserService userService;
+
+    public UserService userService;
+    public HumanService humanService;
+    public CoordinatesService coordinatesService;
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    @Autowired
+    public void setHumanService(HumanService humanService) {
+        this.humanService = humanService;
+    }
+
+    @Autowired
+    public void setCoordinatesService(CoordinatesService coordinatesService) {
+        this.coordinatesService = coordinatesService;
+    }
 
     public CityDTO toCityDTO(City city) {
         CityDTO cityDTO = new CityDTO();
@@ -24,12 +42,12 @@ public class EntityMapper {
         cityDTO.setPopulation(city.getPopulation());
         cityDTO.setClimate(city.getClimate());
         cityDTO.setGovernment(city.getGovernment());
-        cityDTO.setCoordinates(city.getCoordinates());
+        cityDTO.setCoordinates(toCoordinatesDTO(city.getCoordinates()));
         cityDTO.setCapital(city.getCapital());
         cityDTO.setMetersAboveSeaLevel(city.getMetersAboveSeaLevel());
         cityDTO.setStandardOfLiving(city.getStandardOfLiving());
         cityDTO.setEstablishmentDate(city.getEstablishmentDate());
-        cityDTO.setGovernor(city.getGovernor());
+        cityDTO.setGovernor(toHumanDTO(city.getGovernor()));
         cityDTO.setCreatedBy(city.getCreatedBy());
         cityDTO.setCreationDate(city.getCreationDate());
         return cityDTO;
@@ -37,7 +55,6 @@ public class EntityMapper {
 
     public HumanDTO toHumanDTO(Human human) {
         return new HumanDTO(
-                human.getId(),
                 human.getName(),
                 human.getAge(),
                 human.getHeight(),
@@ -47,26 +64,25 @@ public class EntityMapper {
 
     public CoordinatesDTO toCoordinatesDTO(Coordinates coordinates) {
         return new CoordinatesDTO(
-                coordinates.getId(),
                 coordinates.getX(),
                 coordinates.getY()
         );
     }
 
 
-    public City toCityEntity(CityDTO cityDTO) {
+    public City toCityEntity(CityDTO cityDTO, Coordinates coordinates, Human governor) {
         City city = new City();
         city.setName(cityDTO.getName());
         city.setArea(cityDTO.getArea());
         city.setPopulation(cityDTO.getPopulation());
         city.setClimate(cityDTO.getClimate());
         city.setGovernment(cityDTO.getGovernment());
-        city.setCoordinates(cityDTO.getCoordinates());
+        city.setCoordinates(coordinates);
         city.setCapital(cityDTO.getCapital());
         city.setMetersAboveSeaLevel(cityDTO.getMetersAboveSeaLevel());
         city.setStandardOfLiving(cityDTO.getStandardOfLiving());
         city.setEstablishmentDate(cityDTO.getEstablishmentDate());
-        city.setGovernor(cityDTO.getGovernor());
+        city.setGovernor(governor);
         // `createdBy` и `creationDate` не меняются при создании/обновлении
         return city;
     }

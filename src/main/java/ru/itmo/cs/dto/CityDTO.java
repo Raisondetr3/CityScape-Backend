@@ -29,7 +29,7 @@ public class CityDTO {
     private Government government;
 
     @NotNull
-    private Coordinates coordinates;
+    private CoordinatesDTO coordinates;
 
     private Boolean capital;
 
@@ -39,7 +39,7 @@ public class CityDTO {
 
     private LocalDateTime establishmentDate;
 
-    private Human governor;
+    private HumanDTO governor;
 
     private User createdBy;
 

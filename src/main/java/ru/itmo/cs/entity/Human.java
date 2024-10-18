@@ -8,8 +8,6 @@ import lombok.Setter;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import ru.itmo.cs.service.AuditService;
-import ru.itmo.cs.util.ApplicationContextProvider;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -36,25 +34,7 @@ public class Human {
 
     private ZonedDateTime birthday;
 
-    @OneToMany(mappedBy = "coordinates", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "governor")
     private List<City> cities;
-
-    @PrePersist
-    public void onPrePersist() {
-        AuditService auditService = ApplicationContextProvider.getBean(AuditService.class);
-        auditService.auditHuman(this, AuditOperation.CREATE);
-    }
-
-    @PreUpdate
-    public void onPreUpdate() {
-        AuditService auditService = ApplicationContextProvider.getBean(AuditService.class);
-        auditService.auditHuman(this, AuditOperation.UPDATE);
-    }
-
-    @PreRemove
-    public void onPreRemove() {
-        AuditService auditService = ApplicationContextProvider.getBean(AuditService.class);
-        auditService.auditHuman(this, AuditOperation.DELETE);
-    }
 }
 
