@@ -7,6 +7,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import ru.itmo.cs.dto.ErrorResponseDTO;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -24,6 +25,16 @@ public class GlobalExceptionHandler {
                         "stackTrace", Arrays.toString(ex.getStackTrace())
                 )
         );
+    }
+
+    @ExceptionHandler(EntityDeletionException.class)
+    public ResponseEntity<ErrorResponseDTO> handleEntityDeletionException(EntityDeletionException ex) {
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
+                HttpStatus.CONFLICT.value(), // 409
+                ex.getMessage(),
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(BindException.class)
