@@ -24,21 +24,8 @@ import ru.itmo.cs.service.JwtService;
 @RequiredArgsConstructor
 @Log4j2
 public class JwtAuthFilter extends OncePerRequestFilter {
-
     private final JwtService jwtService;
-
     private final UserDetailsService userDetailsService;
-
-
-//    @Autowired
-//    public void setJwtService(JwtService jwtService) {
-//        this.jwtService = jwtService;
-//    }
-//
-//    @Autowired
-//    private void setUserDetailsService(UserDetailsService userDetailsService) {
-//        this.userDetailsService = userDetailsService;
-//    }
 
     @Override
     @SneakyThrows
