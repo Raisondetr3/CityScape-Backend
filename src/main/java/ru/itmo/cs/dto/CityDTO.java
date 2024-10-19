@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import ru.itmo.cs.entity.*;
+import ru.itmo.cs.entity.enums.Climate;
+import ru.itmo.cs.entity.enums.Government;
+import ru.itmo.cs.entity.enums.StandardOfLiving;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

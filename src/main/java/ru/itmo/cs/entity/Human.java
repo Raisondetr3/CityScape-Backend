@@ -8,6 +8,7 @@ import lombok.Setter;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import ru.itmo.cs.entity.audit.HumanAudit;
 
 import java.time.ZonedDateTime;
 import java.util.List;

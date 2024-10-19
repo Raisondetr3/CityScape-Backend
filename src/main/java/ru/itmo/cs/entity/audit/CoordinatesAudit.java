@@ -1,26 +1,29 @@
-package ru.itmo.cs.entity;
+package ru.itmo.cs.entity.audit;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.itmo.cs.entity.Coordinates;
+import ru.itmo.cs.entity.User;
+import ru.itmo.cs.entity.audit.AuditOperation;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "city_audit", schema = "s367911")
+@Table(name = "coordinates_audit", schema = "s367911")
 @Getter
 @Setter
 @NoArgsConstructor
-public class CityAudit {
+public class CoordinatesAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "city_id", nullable = false)
-    private City city;
+    @JoinColumn(name = "coordinates_id", nullable = false)
+    private Coordinates coordinates;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -28,7 +31,7 @@ public class CityAudit {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "operation", nullable = false)
-    private AuditOperation operation; // CREATE, UPDATE
+    private AuditOperation operation;
 
     @Column(name = "operation_time", nullable = false)
     private LocalDateTime operationTime;

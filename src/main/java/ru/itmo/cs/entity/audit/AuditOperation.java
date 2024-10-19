@@ -1,4 +1,4 @@
-package ru.itmo.cs.entity;
+package ru.itmo.cs.entity.audit;
 
 public enum AuditOperation {
     CREATE,

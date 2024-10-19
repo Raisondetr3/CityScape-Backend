@@ -1,4 +1,4 @@
-package ru.itmo.cs.entity;
+package ru.itmo.cs.entity.enums;
 
 public enum StandardOfLiving {
     VERY_HIGH,

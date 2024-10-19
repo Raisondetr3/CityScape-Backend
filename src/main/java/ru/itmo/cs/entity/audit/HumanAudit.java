@@ -1,26 +1,29 @@
-package ru.itmo.cs.entity;
+package ru.itmo.cs.entity.audit;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.itmo.cs.entity.Human;
+import ru.itmo.cs.entity.User;
+import ru.itmo.cs.entity.audit.AuditOperation;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "coordinates_audit", schema = "s367911")
+@Table(name = "human_audit", schema = "s367911")
 @Getter
 @Setter
 @NoArgsConstructor
-public class CoordinatesAudit {
+public class HumanAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "coordinates_id", nullable = false)
-    private Coordinates coordinates;
+    @JoinColumn(name = "human_id", nullable = false)
+    private Human human;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -33,4 +36,3 @@ public class CoordinatesAudit {
     @Column(name = "operation_time", nullable = false)
     private LocalDateTime operationTime;
 }
-

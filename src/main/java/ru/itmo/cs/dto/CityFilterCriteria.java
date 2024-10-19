@@ -3,10 +3,9 @@ package ru.itmo.cs.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import ru.itmo.cs.entity.Climate;
-import ru.itmo.cs.entity.Government;
-import ru.itmo.cs.entity.StandardOfLiving;
+import ru.itmo.cs.entity.enums.Climate;
+import ru.itmo.cs.entity.enums.Government;
+import ru.itmo.cs.entity.enums.StandardOfLiving;
 
 @Data
 @NoArgsConstructor

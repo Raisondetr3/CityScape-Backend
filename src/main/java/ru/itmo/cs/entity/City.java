@@ -7,6 +7,10 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.itmo.cs.entity.audit.CityAudit;
+import ru.itmo.cs.entity.enums.Climate;
+import ru.itmo.cs.entity.enums.Government;
+import ru.itmo.cs.entity.enums.StandardOfLiving;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
