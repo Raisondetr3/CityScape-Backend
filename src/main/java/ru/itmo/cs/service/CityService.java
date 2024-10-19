@@ -1,19 +1,19 @@
 package ru.itmo.cs.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.cs.dto.CityDTO;
-import ru.itmo.cs.entity.AuditOperation;
-import ru.itmo.cs.entity.City;
-import ru.itmo.cs.entity.Coordinates;
-import ru.itmo.cs.entity.Human;
+import ru.itmo.cs.dto.CityFilterCriteria;
+import ru.itmo.cs.entity.*;
 import ru.itmo.cs.repository.CityRepository;
 import ru.itmo.cs.util.EntityMapper;
+import ru.itmo.cs.util.filter.FilterProcessor;
+import ru.itmo.cs.util.pagination.PaginationHandler;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,17 +22,22 @@ public class CityService {
     private final CityRepository cityRepository;
     private final CoordinatesService coordinatesService;
     private final HumanService humanService;
-
     private final UserService userService;
     private final AuditService auditService;
     private final EntityMapper entityMapper;
+    private final FilterProcessor<CityDTO, CityFilterCriteria> cityFilterProcessor;
+    private final PaginationHandler paginationHandler;
 
     @Transactional(readOnly = true)
-    public List<CityDTO> getAllCities() {
-        return cityRepository.findAll()
-                .stream()
-                .map(entityMapper::toCityDTO)
-                .collect(Collectors.toList());
+    public Page<CityDTO> getAllCities(String name, Climate climate, Government government, StandardOfLiving standardOfLiving, int page, int size, String sortBy, String sortDir) {
+        CityFilterCriteria criteria = new CityFilterCriteria();
+        criteria.setName(name);
+        criteria.setClimate(climate);
+        criteria.setGovernment(government);
+        criteria.setStandardOfLiving(standardOfLiving);
+
+        Pageable pageable = paginationHandler.createPageable(page, size, sortBy, sortDir);
+        return cityFilterProcessor.filter(criteria, pageable);
     }
 
     @Transactional(readOnly = true)

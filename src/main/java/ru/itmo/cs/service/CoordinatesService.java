@@ -2,6 +2,8 @@ package ru.itmo.cs.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.cs.dto.CoordinatesDTO;
@@ -10,15 +12,14 @@ import ru.itmo.cs.entity.Coordinates;
 import ru.itmo.cs.exception.EntityDeletionException;
 import ru.itmo.cs.repository.CoordinatesRepository;
 import ru.itmo.cs.util.EntityMapper;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import ru.itmo.cs.util.pagination.PaginationHandler;
 
 @Service
 public class CoordinatesService {
     private CoordinatesRepository coordinatesRepository;
     private EntityMapper entityMapper;
     private AuditService auditService;
+    private PaginationHandler paginationHandler;
 
     @Autowired
     public void setCoordinatesRepository(CoordinatesRepository coordinatesRepository) {
@@ -35,12 +36,15 @@ public class CoordinatesService {
         this.auditService = auditService;
     }
 
+    @Autowired
+    public void setPaginationHandler(PaginationHandler paginationHandler) {
+        this.paginationHandler = paginationHandler;
+    }
+
     @Transactional(readOnly = true)
-    public List<CoordinatesDTO> getAllCoordinates() {
-        return coordinatesRepository.findAll()
-                .stream()
-                .map(entityMapper::toCoordinatesDTO)
-                .collect(Collectors.toList());
+    public Page<CoordinatesDTO> getAllCoordinates(int page, int size, String sortBy, String sortDir) {
+        Pageable pageable = paginationHandler.createPageable(page, size, sortBy, sortDir);
+        return coordinatesRepository.findAll(pageable).map(entityMapper::toCoordinatesDTO);
     }
 
     @Transactional(readOnly = true)
