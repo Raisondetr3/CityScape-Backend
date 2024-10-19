@@ -2,6 +2,7 @@ package ru.itmo.cs.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class Coordinates {
     private Long id;
 
     @NotNull
+    @Min(1)
     @Max(820)
     private Long x;
 

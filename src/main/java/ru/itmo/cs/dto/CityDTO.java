@@ -22,7 +22,6 @@ public class CityDTO {
     @Min(1)
     private Long population;
 
-    @NotNull
     private Climate climate;
 
     @NotNull

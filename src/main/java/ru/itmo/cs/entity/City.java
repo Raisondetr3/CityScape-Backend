@@ -3,6 +3,7 @@ package ru.itmo.cs.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class City {
     private Long id;
 
     @NotNull
+    @Size(min = 1)
     @Column(name = "name")
     private String name;
 
@@ -51,6 +53,7 @@ public class City {
     @Enumerated(EnumType.STRING)
     private Climate climate;
 
+    @NotNull
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Government government;
