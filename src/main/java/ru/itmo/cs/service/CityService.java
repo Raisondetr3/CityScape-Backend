@@ -1,5 +1,6 @@
 package ru.itmo.cs.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,12 +9,18 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.cs.dto.CityDTO;
 import ru.itmo.cs.dto.CityFilterCriteria;
 import ru.itmo.cs.entity.*;
+import ru.itmo.cs.entity.audit.AuditOperation;
+import ru.itmo.cs.entity.enums.Climate;
+import ru.itmo.cs.entity.enums.Government;
+import ru.itmo.cs.entity.enums.StandardOfLiving;
 import ru.itmo.cs.repository.CityRepository;
 import ru.itmo.cs.util.EntityMapper;
 import ru.itmo.cs.util.filter.FilterProcessor;
 import ru.itmo.cs.util.pagination.PaginationHandler;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +34,7 @@ public class CityService {
     private final EntityMapper entityMapper;
     private final FilterProcessor<CityDTO, CityFilterCriteria> cityFilterProcessor;
     private final PaginationHandler paginationHandler;
+    private final CalculateDistanceService calculateDistanceService;
 
     @Transactional(readOnly = true)
     public Page<CityDTO> getAllCities(String name, Climate climate, Government government, StandardOfLiving standardOfLiving, int page, int size, String sortBy, String sortDir) {
@@ -102,6 +110,60 @@ public class CityService {
 
         cityRepository.delete(city);
     }
+
+    @Transactional
+    public void deleteCityByGovernment(Government government) {
+        Optional<City> city = cityRepository.findFirstByGovernment(government);
+        if (city.isPresent()) {
+            cityRepository.delete(city.get());
+        } else {
+            throw new EntityNotFoundException("City with government " + government + " not found");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public Long calculateTotalMetersAboveSeaLevel() {
+        return cityRepository.sumMetersAboveSeaLevel();
+    }
+
+    @Transactional(readOnly = true)
+    public Long countCitiesByClimate(Climate climate) {
+        List<City> cities = cityRepository.findByClimateGreaterThanEqual(climate);
+        return cities.stream()
+                .filter(city -> city.getClimate().ordinal() > climate.ordinal())
+                .count();
+    }
+
+    @Transactional(readOnly = true)
+    public double calculateRouteToCityWithLargestArea() {
+        City cityWithLargestArea = cityRepository.findTopByOrderByAreaDesc();
+        if (cityWithLargestArea != null) {
+            return calculateDistanceService.calculate(0,
+                                                      0,
+                                                      0,
+                                                      cityWithLargestArea.getCoordinates().getX(),
+                                                      cityWithLargestArea.getCoordinates().getY(),
+                                                      0);
+        } else {
+            throw new EntityNotFoundException("No cities found");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public double calculateRouteToCityWithLargestAreaFromUser(double userX, double userY, double userZ) {
+        City cityWithLargestArea = cityRepository.findTopByOrderByAreaDesc();
+        if (cityWithLargestArea != null) {
+            return calculateDistanceService.calculate(userX,
+                                                      userY,
+                                                      userZ,
+                                                      cityWithLargestArea.getCoordinates().getX(),
+                                                      cityWithLargestArea.getCoordinates().getY(),
+                                                      0);
+        } else {
+            throw new EntityNotFoundException("No cities found");
+        }
+    }
+
 }
 
 

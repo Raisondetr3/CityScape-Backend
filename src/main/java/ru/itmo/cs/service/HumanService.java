@@ -7,16 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.cs.dto.HumanDTO;
 import ru.itmo.cs.dto.HumanFilterCriteria;
-import ru.itmo.cs.entity.AuditOperation;
+import ru.itmo.cs.entity.audit.AuditOperation;
 import ru.itmo.cs.entity.Human;
 import ru.itmo.cs.exception.EntityDeletionException;
 import ru.itmo.cs.repository.HumanRepository;
 import ru.itmo.cs.util.EntityMapper;
 import ru.itmo.cs.util.filter.FilterProcessor;
 import ru.itmo.cs.util.pagination.PaginationHandler;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

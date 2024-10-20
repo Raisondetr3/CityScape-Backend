@@ -1,13 +1,16 @@
 package ru.itmo.cs.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.cs.entity.*;
-import ru.itmo.cs.repository.CityAuditRepository;
-import ru.itmo.cs.repository.CoordinatesAuditRepository;
-import ru.itmo.cs.repository.HumanAuditRepository;
+import ru.itmo.cs.entity.audit.AuditOperation;
+import ru.itmo.cs.entity.audit.CityAudit;
+import ru.itmo.cs.entity.audit.CoordinatesAudit;
+import ru.itmo.cs.entity.audit.HumanAudit;
+import ru.itmo.cs.repository.audit.CityAuditRepository;
+import ru.itmo.cs.repository.audit.CoordinatesAuditRepository;
+import ru.itmo.cs.repository.audit.HumanAuditRepository;
 import ru.itmo.cs.util.EntityMapper;
 
 

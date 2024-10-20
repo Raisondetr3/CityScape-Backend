@@ -7,16 +7,21 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.itmo.cs.entity.City;
-import ru.itmo.cs.entity.Climate;
-import ru.itmo.cs.entity.Government;
-import ru.itmo.cs.entity.StandardOfLiving;
+import ru.itmo.cs.entity.enums.Climate;
+import ru.itmo.cs.entity.enums.Government;
+import ru.itmo.cs.entity.enums.StandardOfLiving;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface CityRepository extends JpaRepository<City, Long> {
     Optional<City> findById(Long id);
-    Page<City> findByNameContaining(String name, Pageable pageable);
+    Optional<City> findFirstByGovernment(Government government);
+    @Query("SELECT SUM(c.metersAboveSeaLevel) FROM City c")
+    Long sumMetersAboveSeaLevel();
+    List<City> findByClimateGreaterThanEqual(Climate climate);
+    City findTopByOrderByAreaDesc();
     @Query("SELECT c FROM City c WHERE " +
             "(:name IS NULL OR c.name LIKE %:name%) AND " +
             "(:climate IS NULL OR c.climate = :climate) AND " +

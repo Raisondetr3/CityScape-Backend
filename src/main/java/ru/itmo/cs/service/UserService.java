@@ -16,7 +16,7 @@ import ru.itmo.cs.dto.UserRegistrationDTO;
 import ru.itmo.cs.dto.AdminApprovalDTO;
 import ru.itmo.cs.entity.City;
 import ru.itmo.cs.entity.User;
-import ru.itmo.cs.entity.UserRole;
+import ru.itmo.cs.entity.enums.UserRole;
 import ru.itmo.cs.repository.UserRepository;
 
 @Service

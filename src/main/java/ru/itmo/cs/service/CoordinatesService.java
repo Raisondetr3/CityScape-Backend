@@ -1,13 +1,12 @@
 package ru.itmo.cs.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.cs.dto.CoordinatesDTO;
-import ru.itmo.cs.entity.AuditOperation;
+import ru.itmo.cs.entity.audit.AuditOperation;
 import ru.itmo.cs.entity.Coordinates;
 import ru.itmo.cs.exception.EntityDeletionException;
 import ru.itmo.cs.repository.CoordinatesRepository;
