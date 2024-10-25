@@ -3,14 +3,14 @@ package ru.itmo.cs.exception;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 import ru.itmo.cs.dto.ErrorResponseDTO;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +25,26 @@ public class GlobalExceptionHandler {
                         "stackTrace", Arrays.toString(ex.getStackTrace())
                 )
         );
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBadCredentialsException(BadCredentialsException ex) {
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
+                HttpStatus.UNAUTHORIZED.value(), // 401
+                "Неверное имя пользователя или пароль",
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
+                HttpStatus.NOT_FOUND.value(), // 404
+                "Пользователь не найден",
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EntityDeletionException.class)
@@ -46,7 +66,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
                 HttpStatus.BAD_REQUEST.value(), // 400
-                "Validation failed",
+                "Валидация не прошла",
                 System.currentTimeMillis()
         );
         return new ResponseEntity<>(Map.of(
@@ -64,7 +84,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
                 HttpStatus.BAD_REQUEST.value(), // 400
-                "Binding failed",
+                "Привязка не удалась",
                 System.currentTimeMillis()
         );
         return new ResponseEntity<>(Map.of(

@@ -3,6 +3,7 @@ package ru.itmo.cs.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -58,15 +59,18 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public User login(UserLoginDTO input) {
-        log.info("authenticate() started");
-        System.out.println(passwordEncoder.encode("password123"));
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        input.getUsername(),
-                        input.getPassword()));
-        log.info("authenticate() ended");
-
-        return userRepository.findByUsername(input.getUsername()).orElseThrow();
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            input.getUsername(),
+                            input.getPassword()));
+            return userRepository.findByUsername(input.getUsername())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found: " + input.getUsername()));
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Incorrect password", e);
+        } catch (UsernameNotFoundException e) {
+            throw new UsernameNotFoundException("User not found: " + input.getUsername(), e);
+        }
     }
 
     @Override
