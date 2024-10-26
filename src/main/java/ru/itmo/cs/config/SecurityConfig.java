@@ -37,8 +37,14 @@ public class SecurityConfig {
                     return corsConfiguration;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/auth/register",
+                                         "/api/auth/login",
+                                         "/api/auth/admin-exists")
+                        .permitAll()
+                        .requestMatchers("/api/auth/admin-requests",
+                                         "/api/auth/approve-admin",
+                                         "/api/auth/reject-admin")
+                        .hasRole("ADMIN")
                         .requestMatchers("/api/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -48,5 +54,6 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }
 

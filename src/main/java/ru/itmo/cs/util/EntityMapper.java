@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.itmo.cs.dto.CityDTO;
 import ru.itmo.cs.dto.CoordinatesDTO;
 import ru.itmo.cs.dto.HumanDTO;
+import ru.itmo.cs.dto.UserDTO;
 import ru.itmo.cs.entity.*;
 import ru.itmo.cs.entity.audit.AuditOperation;
 import ru.itmo.cs.entity.audit.CityAudit;
@@ -72,6 +73,15 @@ public class EntityMapper {
                 coordinates.getX(),
                 coordinates.getY()
         );
+    }
+
+    public UserDTO toUserDTO(User user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setRole(user.getRole());
+        userDTO.setPendingAdminApproval(user.isPendingAdminApproval());
+        return userDTO;
     }
 
     public City toCityEntity(CityDTO cityDTO, Coordinates coordinates, Human governor) {

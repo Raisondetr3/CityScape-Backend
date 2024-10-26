@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.itmo.cs.dto.UserDTO;
 import ru.itmo.cs.dto.UserLoginDTO;
 import ru.itmo.cs.dto.UserRegistrationDTO;
 import ru.itmo.cs.dto.AdminApprovalDTO;
@@ -19,6 +20,10 @@ import ru.itmo.cs.entity.City;
 import ru.itmo.cs.entity.User;
 import ru.itmo.cs.entity.enums.UserRole;
 import ru.itmo.cs.repository.UserRepository;
+import ru.itmo.cs.util.EntityMapper;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -27,6 +32,7 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
+    private EntityMapper entityMapper;
 
     @Autowired
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
@@ -41,6 +47,11 @@ public class UserService implements UserDetailsService {
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public void setEntityMapper(EntityMapper entityMapper) {
+        this.entityMapper = entityMapper;
     }
 
     @Transactional
@@ -79,8 +90,12 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
+    public boolean doesAdminExist() {
+        return userRepository.existsByRole(UserRole.ADMIN);
+    }
+
     @Transactional
-    public User requestAdminApproval(Long userId) {
+    public String requestAdminApproval(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -88,13 +103,29 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("Only users with USER role can request admin rights");
         }
 
-        user.setPendingAdminApproval(true);
-        return userRepository.save(user);
+        if (!doesAdminExist()) {
+            user.setRole(UserRole.ADMIN);
+            user.setPendingAdminApproval(false);
+            userRepository.save(user);
+            return "No admins in the system. User has been granted ADMIN rights immediately.";
+        } else {
+            user.setPendingAdminApproval(true);
+            userRepository.save(user);
+            return "Admin approval requested";
+        }
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<UserDTO> getAdminApprovalRequests() {
+        return userRepository.findAllByPendingAdminApprovalTrue().stream()
+                .map(entityMapper::toUserDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public User approveAdmin(AdminApprovalDTO approvalDTO) {
-        User user = userRepository.findById(approvalDTO.getUserId())
+    public void approveAdminRequest(Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         if (!user.isPendingAdminApproval()) {
@@ -103,8 +134,20 @@ public class UserService implements UserDetailsService {
 
         user.setRole(UserRole.ADMIN);
         user.setPendingAdminApproval(false);
+        userRepository.save(user);
+    }
 
-        return userRepository.save(user);
+    @Transactional
+    public void rejectAdminRequest(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (!user.isPendingAdminApproval()) {
+            throw new IllegalArgumentException("No pending admin approval for this user");
+        }
+
+        user.setPendingAdminApproval(false);
+        userRepository.save(user);
     }
 
     public User getCurrentUser() {
