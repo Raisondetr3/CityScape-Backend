@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.itmo.cs.entity.enums.AdminRequestStatus;
 import ru.itmo.cs.entity.enums.UserRole;
 
 import java.time.LocalDateTime;
@@ -37,9 +38,8 @@ public class User implements UserDetails {
     @NotNull
     private UserRole role;
 
-    // Flag to track whether the user has requested administrator privileges
-    @NotNull
-    private boolean pendingAdminApproval = false;
+    @Enumerated(EnumType.STRING)
+    private AdminRequestStatus adminRequestStatus = AdminRequestStatus.NONE;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

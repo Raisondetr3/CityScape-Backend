@@ -80,7 +80,7 @@ public class EntityMapper {
         userDTO.setId(user.getId());
         userDTO.setUsername(user.getUsername());
         userDTO.setRole(user.getRole());
-        userDTO.setPendingAdminApproval(user.isPendingAdminApproval());
+        userDTO.setAdminRequestStatus(user.getAdminRequestStatus());
         return userDTO;
     }
 

@@ -15,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.cs.dto.UserDTO;
 import ru.itmo.cs.dto.UserLoginDTO;
 import ru.itmo.cs.dto.UserRegistrationDTO;
-import ru.itmo.cs.dto.AdminApprovalDTO;
 import ru.itmo.cs.entity.City;
 import ru.itmo.cs.entity.User;
+import ru.itmo.cs.entity.enums.AdminRequestStatus;
 import ru.itmo.cs.entity.enums.UserRole;
 import ru.itmo.cs.repository.UserRepository;
 import ru.itmo.cs.util.EntityMapper;
@@ -64,6 +64,7 @@ public class UserService implements UserDetailsService {
         newUser.setUsername(registrationDTO.getUsername());
         newUser.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
         newUser.setRole(UserRole.USER);
+        newUser.setAdminRequestStatus(AdminRequestStatus.NONE); // Установка начального статуса
 
         return userRepository.save(newUser);
     }
@@ -105,20 +106,36 @@ public class UserService implements UserDetailsService {
 
         if (!doesAdminExist()) {
             user.setRole(UserRole.ADMIN);
-            user.setPendingAdminApproval(false);
+            user.setAdminRequestStatus(AdminRequestStatus.ACCEPTED);
             userRepository.save(user);
             return "No admins in the system. User has been granted ADMIN rights immediately.";
         } else {
-            user.setPendingAdminApproval(true);
+            user.setAdminRequestStatus(AdminRequestStatus.PENDING);
             userRepository.save(user);
             return "Admin approval requested";
         }
     }
 
+    @Transactional(readOnly = true)
+    public String getAdminRequestStatus(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        switch (user.getAdminRequestStatus()) {
+            case PENDING:
+                return "Ваша заявка на администратора находится в ожидании.";
+            case ACCEPTED:
+                return "Ваша заявка одобрена. Вы теперь администратор.";
+            case REJECTED:
+                return "Ваша заявка отклонена.";
+            default:
+                return "Вы еще не отправили запрос на администратора.";
+        }
+    }
 
     @Transactional(readOnly = true)
     public List<UserDTO> getAdminApprovalRequests() {
-        return userRepository.findAllByPendingAdminApprovalTrue().stream()
+        return userRepository.findAllByAdminRequestStatus(AdminRequestStatus.PENDING).stream()
                 .map(entityMapper::toUserDTO)
                 .collect(Collectors.toList());
     }
@@ -128,12 +145,12 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (!user.isPendingAdminApproval()) {
+        if (user.getAdminRequestStatus() != AdminRequestStatus.PENDING) {
             throw new IllegalArgumentException("No pending admin approval for this user");
         }
 
         user.setRole(UserRole.ADMIN);
-        user.setPendingAdminApproval(false);
+        user.setAdminRequestStatus(AdminRequestStatus.ACCEPTED);
         userRepository.save(user);
     }
 
@@ -142,11 +159,11 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (!user.isPendingAdminApproval()) {
+        if (user.getAdminRequestStatus() != AdminRequestStatus.PENDING) {
             throw new IllegalArgumentException("No pending admin approval for this user");
         }
 
-        user.setPendingAdminApproval(false);
+        user.setAdminRequestStatus(AdminRequestStatus.REJECTED);
         userRepository.save(user);
     }
 
@@ -160,7 +177,6 @@ public class UserService implements UserDetailsService {
             throw new IllegalStateException("Authentication principal is not of type UserDetails");
         }
     }
-
 
     public boolean canModifyCity(City city) {
         User currentUser = getCurrentUser();

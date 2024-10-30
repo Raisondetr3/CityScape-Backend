@@ -38,14 +38,17 @@ public class SecurityConfig {
                 }))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/register",
-                                         "/api/auth/login",
-                                         "/api/auth/admin-exists")
+                                "/api/auth/login",
+                                "/api/auth/admin-exists")
                         .permitAll()
-                        .requestMatchers("/api/auth/admin-requests",
-                                         "/api/auth/approve-admin",
-                                         "/api/auth/reject-admin")
+                        .requestMatchers("/api/auth/admin-requests/status")
+                        .hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/auth/approve-admin",
+                                "/api/auth/reject-admin",
+                                "/api/auth/admin-requests")
                         .hasRole("ADMIN")
-                        .requestMatchers("/api/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/**")
+                        .hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -54,6 +57,7 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 }
+
+
 

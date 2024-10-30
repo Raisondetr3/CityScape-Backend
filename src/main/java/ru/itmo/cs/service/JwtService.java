@@ -37,8 +37,11 @@ public class JwtService {
     }
 
     public String generateToken(User userDetails) {
-        log.info("generateToken()");
-        return generateToken(Map.of("role", userDetails.getRole()), userDetails);
+        log.info("generateToken() for user: {}", userDetails.getUsername());
+        return generateToken(Map.of(
+                "role", userDetails.getRole(),
+                "userId", userDetails.getId()
+        ), userDetails);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
@@ -66,7 +69,6 @@ public class JwtService {
         }
     }
 
-
     public boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
@@ -84,12 +86,15 @@ public class JwtService {
     private Claims extractAllClaims(final String token) {
         log.info("extractAllClaims()");
         try {
-            return Jwts
+            Claims claims = Jwts
                     .parserBuilder()
                     .setSigningKey(getSignInKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
+
+            log.info("Extracted claims: {}", claims);
+            return claims;
         } catch (JwtException e) {
             log.error("Error parsing JWT: " + e.getMessage(), e);
             throw e;

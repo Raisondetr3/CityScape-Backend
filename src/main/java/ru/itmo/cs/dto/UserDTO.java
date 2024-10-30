@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.itmo.cs.entity.enums.AdminRequestStatus;
 import ru.itmo.cs.entity.enums.UserRole;
 
 @Data
@@ -19,7 +20,6 @@ public class UserDTO {
     @NotNull
     private UserRole role;
 
-    @NotNull
-    private boolean pendingAdminApproval;
+    private AdminRequestStatus adminRequestStatus;
 }
 

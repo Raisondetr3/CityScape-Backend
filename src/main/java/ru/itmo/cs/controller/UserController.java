@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itmo.cs.dto.*;
 import ru.itmo.cs.entity.User;
-import ru.itmo.cs.entity.enums.UserRole;
 import ru.itmo.cs.service.JwtService;
 import ru.itmo.cs.service.UserService;
 
@@ -21,13 +20,8 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserRegistrationDTO registrationDTO) {
-        User registeredUser = userService.registerUser(registrationDTO);
-
-        if (registeredUser.getRole() == UserRole.ADMIN) {
-            return ResponseEntity.ok("You have become an administrator!");
-        } else {
-            return ResponseEntity.ok("User registered successfully.");
-        }
+        userService.registerUser(registrationDTO);
+        return ResponseEntity.ok("User registered successfully.");
     }
 
     @GetMapping("/admin-exists")
@@ -52,26 +46,27 @@ public class UserController {
         return ResponseEntity.ok(userService.getAdminApprovalRequests());
     }
 
+    @GetMapping("/admin-requests/status")
+    public ResponseEntity<String> getAdminRequestStatus(@RequestParam Long userId) {
+        String statusMessage = userService.getAdminRequestStatus(userId);
+        return ResponseEntity.ok(statusMessage);
+    }
+
     @PostMapping("/request-admin")
     public ResponseEntity<String> requestAdminApproval(@RequestBody AdminApprovalDTO approvalDTO) {
         String responseMessage = userService.requestAdminApproval(approvalDTO.getUserId());
         return ResponseEntity.ok(responseMessage);
     }
 
-    // Одобрение запроса на права администратора
     @PostMapping("/approve-admin")
     public ResponseEntity<String> approveAdmin(@RequestBody AdminApprovalDTO approvalDTO) {
         userService.approveAdminRequest(approvalDTO.getUserId());
         return ResponseEntity.ok("Admin rights granted");
     }
 
-    // Отклонение запроса на права администратора
     @PostMapping("/reject-admin")
     public ResponseEntity<String> rejectAdmin(@RequestBody AdminApprovalDTO approvalDTO) {
         userService.rejectAdminRequest(approvalDTO.getUserId());
         return ResponseEntity.ok("Admin request rejected");
     }
 }
-
-
-
