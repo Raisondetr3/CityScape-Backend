@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.itmo.cs.adminStatus.AdminRequestStatusHandler;
 import ru.itmo.cs.dto.UserDTO;
 import ru.itmo.cs.dto.UserLoginDTO;
 import ru.itmo.cs.dto.UserRegistrationDTO;
@@ -23,6 +24,7 @@ import ru.itmo.cs.repository.UserRepository;
 import ru.itmo.cs.util.EntityMapper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +35,7 @@ public class UserService implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
     private EntityMapper entityMapper;
+    private Map<String, AdminRequestStatusHandler> statusHandlers;
 
     @Autowired
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
@@ -52,6 +55,11 @@ public class UserService implements UserDetailsService {
     @Autowired
     public void setEntityMapper(EntityMapper entityMapper) {
         this.entityMapper = entityMapper;
+    }
+
+    @Autowired
+    public void setStatusHandlers(Map<String, AdminRequestStatusHandler> statusHandlers) {
+        this.statusHandlers = statusHandlers;
     }
 
     @Transactional
@@ -121,16 +129,11 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        switch (user.getAdminRequestStatus()) {
-            case PENDING:
-                return "Ваша заявка на администратора находится в ожидании.";
-            case ACCEPTED:
-                return "Ваша заявка одобрена. Вы теперь администратор.";
-            case REJECTED:
-                return "Ваша заявка отклонена.";
-            default:
-                return "Вы еще не отправили запрос на администратора.";
+        AdminRequestStatusHandler handler = statusHandlers.get(user.getAdminRequestStatus().name());
+        if (handler == null) {
+            throw new IllegalStateException("No handler found for status: " + user.getAdminRequestStatus());
         }
+        return handler.getStatusMessage();
     }
 
     @Transactional(readOnly = true)
