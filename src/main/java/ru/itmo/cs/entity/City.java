@@ -56,7 +56,7 @@ public class City {
 
     private long metersAboveSeaLevel;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Climate climate;
 
     @NotNull

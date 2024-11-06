@@ -137,10 +137,7 @@ public class CityService {
 
     @Transactional(readOnly = true)
     public Long countCitiesByClimate(Climate climate) {
-        List<City> cities = cityRepository.findByClimateGreaterThanEqual(climate);
-        return cities.stream()
-                .filter(city -> city.getClimate().ordinal() > climate.ordinal())
-                .count();
+        return (long) cityRepository.findByClimateGreaterThan(climate).size();
     }
 
     @Transactional(readOnly = true)
