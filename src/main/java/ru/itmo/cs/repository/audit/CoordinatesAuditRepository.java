@@ -6,4 +6,5 @@ import ru.itmo.cs.entity.audit.CoordinatesAudit;
 
 @Repository
 public interface CoordinatesAuditRepository extends JpaRepository<CoordinatesAudit, Long> {
+    void deleteAllByCoordinatesId(Long coordinatesId);
 }

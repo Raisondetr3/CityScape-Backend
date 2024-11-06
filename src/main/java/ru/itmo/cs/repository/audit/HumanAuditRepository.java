@@ -6,4 +6,5 @@ import ru.itmo.cs.entity.audit.HumanAudit;
 
 @Repository
 public interface HumanAuditRepository extends JpaRepository<HumanAudit, Long> {
+    void deleteAllByHumanId(Long humanId);
 }

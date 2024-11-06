@@ -95,6 +95,8 @@ public class HumanService {
             throw new EntityDeletionException("Cannot delete Human as it is associated with one or more Cities.");
         }
 
+        auditService.deleteHumanAuditEntries(human.getId());
+
         humanRepository.delete(human);
     }
 }

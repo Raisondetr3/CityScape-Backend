@@ -107,6 +107,8 @@ public class CoordinatesService {
             throw new EntityDeletionException("Cannot delete Coordinates as it is associated with one or more Cities.");
         }
 
+        auditService.deleteCoordinatesAuditEntries(coordinates.getId());
+
         coordinatesRepository.delete(coordinates);
     }
 }

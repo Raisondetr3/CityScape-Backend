@@ -6,4 +6,5 @@ import ru.itmo.cs.entity.audit.CityAudit;
 
 @Repository
 public interface CityAuditRepository extends JpaRepository<CityAudit, Long> {
+    void deleteAllByCityId(Long cityId);
 }

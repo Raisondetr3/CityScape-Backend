@@ -59,5 +59,20 @@ public class AuditService {
         CoordinatesAudit coordinatesAudit = entityMapper.toCoordinatesAudit(coordinates, operation);
         coordinatesAuditRepository.save(coordinatesAudit);
     }
+
+    @Transactional
+    public void deleteCityAuditEntries(Long cityId) {
+        cityAuditRepository.deleteAllByCityId(cityId);
+    }
+
+    @Transactional
+    public void deleteCoordinatesAuditEntries(Long coordinatesId) {
+        coordinatesAuditRepository.deleteAllByCoordinatesId(coordinatesId);
+    }
+
+    @Transactional
+    public void deleteHumanAuditEntries(Long humanId) {
+        humanAuditRepository.deleteAllByHumanId(humanId);
+    }
 }
 

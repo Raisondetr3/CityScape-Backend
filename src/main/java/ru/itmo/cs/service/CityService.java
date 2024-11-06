@@ -10,10 +10,12 @@ import ru.itmo.cs.dto.CityDTO;
 import ru.itmo.cs.dto.CityFilterCriteria;
 import ru.itmo.cs.entity.*;
 import ru.itmo.cs.entity.audit.AuditOperation;
+import ru.itmo.cs.entity.audit.CityAudit;
 import ru.itmo.cs.entity.enums.Climate;
 import ru.itmo.cs.entity.enums.Government;
 import ru.itmo.cs.entity.enums.StandardOfLiving;
 import ru.itmo.cs.repository.CityRepository;
+import ru.itmo.cs.repository.audit.CityAuditRepository;
 import ru.itmo.cs.util.EntityMapper;
 import ru.itmo.cs.util.filter.FilterProcessor;
 import ru.itmo.cs.util.pagination.PaginationHandler;
@@ -108,17 +110,24 @@ public class CityService {
             throw new SecurityException("You don't have permission to delete this city");
         }
 
+        auditService.deleteCityAuditEntries(city.getId());
+
         cityRepository.delete(city);
     }
 
     @Transactional
     public void deleteCityByGovernment(Government government) {
-        Optional<City> city = cityRepository.findFirstByGovernment(government);
-        if (city.isPresent()) {
-            cityRepository.delete(city.get());
-        } else {
-            throw new EntityNotFoundException("City with government " + government + " not found");
+        City city = cityRepository.findFirstByGovernment(government)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("City with government " + government + " not found"));
+
+        if (!userService.canModifyCity(city)) {
+            throw new SecurityException("You don't have permission to delete this city");
         }
+
+        auditService.deleteCityAuditEntries(city.getId());
+
+        cityRepository.delete(city);
     }
 
     @Transactional(readOnly = true)
@@ -165,5 +174,3 @@ public class CityService {
     }
 
 }
-
-
