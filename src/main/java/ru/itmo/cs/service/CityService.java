@@ -39,12 +39,15 @@ public class CityService {
     private final CalculateDistanceService calculateDistanceService;
 
     @Transactional(readOnly = true)
-    public Page<CityDTO> getAllCities(String name, Climate climate, Government government, StandardOfLiving standardOfLiving, int page, int size, String sortBy, String sortDir) {
+    public Page<CityDTO> getAllCities(String name, Climate climate, Government government,
+                                      StandardOfLiving standardOfLiving, String governorName,
+                                      int page, int size, String sortBy, String sortDir) {
         CityFilterCriteria criteria = new CityFilterCriteria();
         criteria.setName(name);
         criteria.setClimate(climate);
         criteria.setGovernment(government);
         criteria.setStandardOfLiving(standardOfLiving);
+        criteria.setGovernorName(governorName);
 
         Pageable pageable = paginationHandler.createPageable(page, size, sortBy, sortDir);
         return cityFilterProcessor.filter(criteria, pageable);

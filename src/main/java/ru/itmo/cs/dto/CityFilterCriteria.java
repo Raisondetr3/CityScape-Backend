@@ -15,4 +15,5 @@ public class CityFilterCriteria {
     private Climate climate;
     private Government government;
     private StandardOfLiving standardOfLiving;
+    private String governorName;
 }

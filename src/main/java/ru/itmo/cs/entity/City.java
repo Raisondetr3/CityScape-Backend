@@ -77,7 +77,6 @@ public class City {
     @JoinColumn(name = "created_by")
     private User createdBy;
 
-//    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
     @OneToMany(mappedBy = "city")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<CityAudit> audits;

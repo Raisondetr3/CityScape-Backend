@@ -41,6 +41,7 @@ public class EntityMapper {
 
     public CityDTO toCityDTO(City city) {
         CityDTO cityDTO = new CityDTO();
+        cityDTO.setId(city.getId());
         cityDTO.setName(city.getName());
         cityDTO.setArea(city.getArea());
         cityDTO.setPopulation(city.getPopulation());

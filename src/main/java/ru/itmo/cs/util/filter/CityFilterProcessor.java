@@ -19,17 +19,11 @@ public class CityFilterProcessor implements FilterProcessor<CityDTO, CityFilterC
 
     @Override
     public Page<CityDTO> filter(CityFilterCriteria criteria, Pageable pageable) {
-        if ((criteria.getName() == null || criteria.getName().isEmpty())
-                && criteria.getClimate() == null
-                && criteria.getGovernment() == null
-                && criteria.getStandardOfLiving() == null) {
+        if ((criteria.getName() == null || criteria.getName().isEmpty()) &&
+                (criteria.getGovernorName() == null || criteria.getGovernorName().isEmpty())) {
             return cityRepository.findAll(pageable).map(entityMapper::toCityDTO);
         } else {
-            return cityRepository.findByFilters(criteria.getName(),
-                            criteria.getClimate(),
-                            criteria.getGovernment(),
-                            criteria.getStandardOfLiving(),
-                            pageable)
+            return cityRepository.findByFilters(criteria.getName(), criteria.getGovernorName(), pageable)
                     .map(entityMapper::toCityDTO);
         }
     }

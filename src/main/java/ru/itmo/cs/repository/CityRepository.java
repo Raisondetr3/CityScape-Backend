@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import ru.itmo.cs.entity.City;
 import ru.itmo.cs.entity.enums.Climate;
 import ru.itmo.cs.entity.enums.Government;
-import ru.itmo.cs.entity.enums.StandardOfLiving;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,14 +23,11 @@ public interface CityRepository extends JpaRepository<City, Long> {
     List<City> findByClimateGreaterThan(@Param("climate") Climate climate);
 
     City findTopByOrderByAreaDesc();
-    @Query("SELECT c FROM City c WHERE " +
-            "(:name IS NULL OR c.name LIKE %:name%) AND " +
-            "(:climate IS NULL OR c.climate = :climate) AND " +
-            "(:government IS NULL OR c.government = :government) AND " +
-            "(:standardOfLiving IS NULL OR c.standardOfLiving = :standardOfLiving)")
+    @Query("SELECT c FROM City c " +
+            "LEFT JOIN c.governor g " +
+            "WHERE (:name IS NULL OR c.name LIKE %:name%) " +
+            "AND (:governorName IS NULL OR g.name LIKE %:governorName%)")
     Page<City> findByFilters(@Param("name") String name,
-                             @Param("climate") Climate climate,
-                             @Param("government") Government government,
-                             @Param("standardOfLiving") StandardOfLiving standardOfLiving,
+                             @Param("governorName") String governorName,
                              Pageable pageable);
 }

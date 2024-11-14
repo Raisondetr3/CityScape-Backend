@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 
 @Data
 public class CityDTO {
+    private Long id;
+
     @NotBlank
     private String name;
 
