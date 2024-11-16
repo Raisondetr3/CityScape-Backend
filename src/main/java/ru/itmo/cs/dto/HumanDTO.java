@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.itmo.cs.entity.User;
 
 import java.time.ZonedDateTime;
 
@@ -25,5 +26,7 @@ public class HumanDTO {
     private int height;
 
     private ZonedDateTime birthday;
+
+    private User createdBy;
 }
 

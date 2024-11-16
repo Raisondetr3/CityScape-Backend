@@ -64,7 +64,8 @@ public class EntityMapper {
                 human.getName(),
                 human.getAge(),
                 human.getHeight(),
-                human.getBirthday()
+                human.getBirthday(),
+                human.getCreatedBy()
         );
     }
 
@@ -72,7 +73,8 @@ public class EntityMapper {
         return new CoordinatesDTO(
                 coordinates.getId(),
                 coordinates.getX(),
-                coordinates.getY()
+                coordinates.getY(),
+                coordinates.getCreatedBy()
         );
     }
 

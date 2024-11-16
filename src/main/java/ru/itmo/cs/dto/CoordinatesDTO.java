@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.itmo.cs.entity.User;
 
 @Data
 @NoArgsConstructor
@@ -20,5 +21,7 @@ public class CoordinatesDTO {
 
     @NotNull
     private Double y;
+
+    private User createdBy;
 }
 

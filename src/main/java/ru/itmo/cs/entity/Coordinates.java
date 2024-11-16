@@ -33,6 +33,11 @@ public class Coordinates {
     @OneToMany(mappedBy = "coordinates")
     private List<City> cities;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
     @OneToMany(mappedBy = "coordinates", cascade = CascadeType.REMOVE)
     private List<CoordinatesAudit> audits;
 }

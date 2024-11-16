@@ -20,6 +20,7 @@ import ru.itmo.cs.util.pagination.PaginationHandler;
 public class HumanService {
     private final HumanRepository humanRepository;
     private final AuditService auditService;
+    private final UserService userService;
     private final EntityMapper entityMapper;
     private final FilterProcessor<HumanDTO, HumanFilterCriteria> humanFilterProcessor;
     private final PaginationHandler paginationHandler;
@@ -36,13 +37,14 @@ public class HumanService {
     @Transactional(readOnly = true)
     public HumanDTO getHumanById(Long id) {
         Human human = humanRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Human not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Human не найден"));
         return entityMapper.toHumanDTO(human);
     }
 
     @Transactional
     public HumanDTO createHuman(HumanDTO humanDTO) {
         Human human = entityMapper.toHumanEntity(humanDTO);
+        human.setCreatedBy(userService.getCurrentUser());
         Human savedHuman = humanRepository.save(human);
         auditService.auditHuman(savedHuman, AuditOperation.CREATE);
         return entityMapper.toHumanDTO(savedHuman);
@@ -51,7 +53,7 @@ public class HumanService {
     @Transactional
     public HumanDTO updateHuman(HumanDTO humanDTO) {
         Human human = humanRepository.findById(humanDTO.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Human not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Human не найден"));
 
         human.setName(humanDTO.getName());
         human.setAge(humanDTO.getAge());
@@ -68,7 +70,7 @@ public class HumanService {
         // Determining whether to create a new object or update an existing one
         if (humanDTO.getId() != null) {
             Human existingHuman = humanRepository.findById(humanDTO.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Human not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("Human не найден"));
 
             existingHuman.setName(humanDTO.getName());
             existingHuman.setAge(humanDTO.getAge());
@@ -80,6 +82,7 @@ public class HumanService {
             return savedHuman;
         } else {
             Human human = entityMapper.toHumanEntity(humanDTO);
+            human.setCreatedBy(userService.getCurrentUser());
             Human savedHuman = humanRepository.save(human);
             auditService.auditHuman(savedHuman, AuditOperation.CREATE);
             return savedHuman;

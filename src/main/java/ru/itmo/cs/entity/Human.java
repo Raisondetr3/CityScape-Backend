@@ -38,6 +38,11 @@ public class Human {
     @OneToMany(mappedBy = "governor")
     private List<City> cities;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
     @OneToMany(mappedBy = "human", cascade = CascadeType.REMOVE)
     private List<HumanAudit> audits;
 }

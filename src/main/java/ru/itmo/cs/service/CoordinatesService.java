@@ -18,6 +18,7 @@ public class CoordinatesService {
     private CoordinatesRepository coordinatesRepository;
     private EntityMapper entityMapper;
     private AuditService auditService;
+    private UserService userService;
     private PaginationHandler paginationHandler;
 
     @Autowired
@@ -40,6 +41,11 @@ public class CoordinatesService {
         this.paginationHandler = paginationHandler;
     }
 
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
     @Transactional(readOnly = true)
     public Page<CoordinatesDTO> getAllCoordinates(int page, int size, String sortBy, String sortDir) {
         Pageable pageable = paginationHandler.createPageable(page, size, sortBy, sortDir);
@@ -49,13 +55,14 @@ public class CoordinatesService {
     @Transactional(readOnly = true)
     public CoordinatesDTO getCoordinatesById(Long id) {
         Coordinates coordinates = coordinatesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Coordinates not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Coordinates не найден"));
         return entityMapper.toCoordinatesDTO(coordinates);
     }
 
     @Transactional
     public CoordinatesDTO createCoordinates(CoordinatesDTO coordinatesDTO) {
         Coordinates coordinates = entityMapper.toCoordinatesEntity(coordinatesDTO);
+        coordinates.setCreatedBy(userService.getCurrentUser());
         Coordinates savedCoordinates = coordinatesRepository.save(coordinates);
         auditService.auditCoordinates(savedCoordinates, AuditOperation.CREATE);
         return entityMapper.toCoordinatesDTO(savedCoordinates);
@@ -64,7 +71,7 @@ public class CoordinatesService {
     @Transactional
     public CoordinatesDTO updateCoordinates( CoordinatesDTO coordinatesDTO) {
         Coordinates coordinates = coordinatesRepository.findById(coordinatesDTO.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Coordinates not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Coordinates не найден"));
 
         coordinates.setX(coordinatesDTO.getX());
         coordinates.setY(coordinatesDTO.getY());
@@ -81,7 +88,7 @@ public class CoordinatesService {
         // Determining whether to create a new object or update an existing one
         if (coordinatesDTO.getId() != null) {
             Coordinates existingCoordinates = coordinatesRepository.findById(coordinatesDTO.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Coordinates not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("Coordinates не найден"));
 
             existingCoordinates.setX(coordinatesDTO.getX());
             existingCoordinates.setY(coordinatesDTO.getY());
@@ -91,6 +98,7 @@ public class CoordinatesService {
             return savedCoordinates;
         } else {
             Coordinates coordinates = entityMapper.toCoordinatesEntity(coordinatesDTO);
+            coordinates.setCreatedBy(userService.getCurrentUser());
             Coordinates savedCoordinates = coordinatesRepository.save(coordinates);
             auditService.auditCoordinates(savedCoordinates, AuditOperation.CREATE);
             return savedCoordinates;
@@ -101,7 +109,7 @@ public class CoordinatesService {
     @Transactional
     public void deleteCoordinates(Long id) {
         Coordinates coordinates = coordinatesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Coordinates не найдены"));
+                .orElseThrow(() -> new IllegalArgumentException("Coordinates не найден"));
 
         if (!coordinates.getCities().isEmpty()) {
             throw new EntityDeletionException("Невозможно удалить Coordinates," +
