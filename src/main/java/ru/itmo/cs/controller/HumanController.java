@@ -21,7 +21,7 @@ public class HumanController {
     public ResponseEntity<PaginationResponseDTO<HumanDTO>> getAllHumans(
             @RequestParam(required = false) String name,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "8") int size,
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
 

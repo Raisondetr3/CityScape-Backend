@@ -56,7 +56,7 @@ public class CityService {
     @Transactional(readOnly = true)
     public CityDTO getCityById(Long id) {
         City city = cityRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("City not found"));
+                .orElseThrow(() -> new IllegalArgumentException("City не найден"));
         return entityMapper.toCityDTO(city);
     }
 
@@ -81,10 +81,10 @@ public class CityService {
     @Transactional
     public CityDTO updateCity(Long id, CityDTO cityDTO) {
         City existingCity = cityRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("City not found"));
+                .orElseThrow(() -> new IllegalArgumentException("City не найден"));
 
         if (!userService.canModifyCity(existingCity)) {
-            throw new SecurityException("You don't have permission to modify this city");
+            throw new SecurityException("У вас нет разрешения на изменение этого City");
         }
 
         Coordinates savedCoordinates = coordinatesService
@@ -107,10 +107,10 @@ public class CityService {
     @Transactional
     public void deleteCity(Long id) {
         City city = cityRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("City not found"));
+                .orElseThrow(() -> new IllegalArgumentException("City не найден"));
 
         if (!userService.canModifyCity(city)) {
-            throw new SecurityException("You don't have permission to delete this city");
+            throw new SecurityException("У вас нет разрешения на удаление этого City");
         }
 
         auditService.deleteCityAuditEntries(city.getId());

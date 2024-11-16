@@ -101,10 +101,11 @@ public class CoordinatesService {
     @Transactional
     public void deleteCoordinates(Long id) {
         Coordinates coordinates = coordinatesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Coordinates not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Coordinates не найдены"));
 
         if (!coordinates.getCities().isEmpty()) {
-            throw new EntityDeletionException("Cannot delete Coordinates as it is associated with one or more Cities.");
+            throw new EntityDeletionException("Невозможно удалить Coordinates," +
+                    " поскольку они связаны с одним или несколькими Cities");
         }
 
         auditService.deleteCoordinatesAuditEntries(coordinates.getId());

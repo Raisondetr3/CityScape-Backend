@@ -27,7 +27,7 @@ public class CityController {
             @RequestParam(required = false) StandardOfLiving standardOfLiving,
             @RequestParam(required = false) String governorName,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "8") int size,
             @RequestParam(defaultValue = "name") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
 
@@ -98,4 +98,6 @@ public class CityController {
         return ResponseEntity.ok(distance);
     }
 }
+
+
 

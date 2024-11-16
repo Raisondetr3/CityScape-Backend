@@ -89,10 +89,11 @@ public class HumanService {
     @Transactional
     public void deleteHuman(Long id) {
         Human human = humanRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Human not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Human не найден"));
 
         if (!human.getCities().isEmpty()) {
-            throw new EntityDeletionException("Cannot delete Human as it is associated with one or more Cities.");
+            throw new EntityDeletionException("Невозможно удалить Human," +
+                    " поскольку он связан с одним или несколькими Cities");
         }
 
         auditService.deleteHumanAuditEntries(human.getId());

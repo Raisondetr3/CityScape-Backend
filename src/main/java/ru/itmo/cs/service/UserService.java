@@ -65,7 +65,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public User registerUser(UserRegistrationDTO registrationDTO) {
         if (userRepository.findByUsername(registrationDTO.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("User with this username already exists");
+            throw new IllegalArgumentException("Пользователь с таким username уже существует");
         }
 
         User newUser = new User();
@@ -85,18 +85,18 @@ public class UserService implements UserDetailsService {
                             input.getUsername(),
                             input.getPassword()));
             return userRepository.findByUsername(input.getUsername())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found: " + input.getUsername()));
+                    .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + input.getUsername()));
         } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("Incorrect password", e);
+            throw new BadCredentialsException("Неправильный пароль", e);
         } catch (UsernameNotFoundException e) {
-            throw new UsernameNotFoundException("User not found: " + input.getUsername(), e);
+            throw new UsernameNotFoundException("Пользователь не найден: " + input.getUsername(), e);
         }
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + username));
     }
 
     public boolean doesAdminExist() {
@@ -106,32 +106,32 @@ public class UserService implements UserDetailsService {
     @Transactional
     public String requestAdminApproval(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
 
         if (user.getRole() != UserRole.USER) {
-            throw new IllegalArgumentException("Only users with USER role can request admin rights");
+            throw new IllegalArgumentException("Только пользователи с ролью `USER` могут запросить права `ADMIN`");
         }
 
         if (!doesAdminExist()) {
             user.setRole(UserRole.ADMIN);
             user.setAdminRequestStatus(AdminRequestStatus.ACCEPTED);
             userRepository.save(user);
-            return "No admins in the system. User has been granted ADMIN rights immediately.";
+            return "В системе нет администраторов. Пользователю были немедленно предоставлены права ADMIN";
         } else {
             user.setAdminRequestStatus(AdminRequestStatus.PENDING);
             userRepository.save(user);
-            return "Admin approval requested";
+            return "Запрашивается одобрение администратора";
         }
     }
 
     @Transactional(readOnly = true)
     public String getAdminRequestStatus(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
 
         AdminRequestStatusHandler handler = statusHandlers.get(user.getAdminRequestStatus().name());
         if (handler == null) {
-            throw new IllegalStateException("No handler found for status: " + user.getAdminRequestStatus());
+            throw new IllegalStateException("Не найден обработчик для статуса: " + user.getAdminRequestStatus());
         }
         return handler.getStatusMessage();
     }
@@ -146,10 +146,10 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void approveAdminRequest(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
 
         if (user.getAdminRequestStatus() != AdminRequestStatus.PENDING) {
-            throw new IllegalArgumentException("No pending admin approval for this user");
+            throw new IllegalArgumentException("Нет ожидающих одобрения администратора для этого пользователя");
         }
 
         user.setRole(UserRole.ADMIN);
@@ -160,10 +160,10 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void rejectAdminRequest(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
 
         if (user.getAdminRequestStatus() != AdminRequestStatus.PENDING) {
-            throw new IllegalArgumentException("No pending admin approval for this user");
+            throw new IllegalArgumentException("Нет ожидающих одобрения администратора для этого пользователя");
         }
 
         user.setAdminRequestStatus(AdminRequestStatus.REJECTED);
@@ -175,9 +175,9 @@ public class UserService implements UserDetailsService {
         if (principal instanceof UserDetails) {
             String username = ((UserDetails) principal).getUsername();
             return userRepository.findByUsername(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+                    .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + username));
         } else {
-            throw new IllegalStateException("Authentication principal is not of type UserDetails");
+            throw new IllegalStateException("Authentication principal не имеет типа UserDetails");
         }
     }
 

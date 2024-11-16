@@ -18,7 +18,7 @@ public class MD5PasswordEncoder implements PasswordEncoder {
             }
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("MD5 algorithm not found", e);
+            throw new RuntimeException("MD5 алгоритм не найден", e);
         }
     }
 

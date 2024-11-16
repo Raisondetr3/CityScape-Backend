@@ -61,7 +61,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             chain.doFilter(request, response);
         } catch (JwtException | IllegalArgumentException ignored) {
-            log.trace("Unable to parse jwt");
+            log.trace("Невозможно разобрать jwt");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
