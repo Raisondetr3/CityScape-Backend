@@ -1,5 +1,6 @@
 package ru.itmo.cs.service;
 
+import io.jsonwebtoken.Jwt;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,13 +14,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.cs.adminStatus.AdminRequestStatusHandler;
-import ru.itmo.cs.dto.UserDTO;
-import ru.itmo.cs.dto.UserLoginDTO;
-import ru.itmo.cs.dto.UserRegistrationDTO;
+import ru.itmo.cs.dto.*;
 import ru.itmo.cs.entity.City;
 import ru.itmo.cs.entity.User;
 import ru.itmo.cs.entity.enums.AdminRequestStatus;
 import ru.itmo.cs.entity.enums.UserRole;
+import ru.itmo.cs.exception.UsernameAlreadyExistsException;
 import ru.itmo.cs.repository.UserRepository;
 import ru.itmo.cs.util.EntityMapper;
 
@@ -36,6 +36,8 @@ public class UserService implements UserDetailsService {
     private AuthenticationManager authenticationManager;
     private EntityMapper entityMapper;
     private Map<String, AdminRequestStatusHandler> statusHandlers;
+
+    private JwtService jwtService;
 
     @Autowired
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
@@ -60,6 +62,11 @@ public class UserService implements UserDetailsService {
     @Autowired
     public void setStatusHandlers(Map<String, AdminRequestStatusHandler> statusHandlers) {
         this.statusHandlers = statusHandlers;
+    }
+
+    @Autowired
+    public void setJwtService(JwtService jwtService) {
+        this.jwtService = jwtService;
     }
 
     @Transactional
@@ -170,6 +177,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    @Transactional(readOnly = true)
     public User getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
@@ -184,5 +192,25 @@ public class UserService implements UserDetailsService {
     public boolean canModifyCity(City city) {
         User currentUser = getCurrentUser();
         return city.getCreatedBy().equals(currentUser) || currentUser.getRole() == UserRole.ADMIN;
+    }
+
+    @Transactional
+    public UserUpdateResponseDTO updateCurrentUser(UserUpdateDTO userUpdateDTO) {
+        User currentUser = getCurrentUser();
+
+        if (userUpdateDTO.getUsername() != null && !userUpdateDTO.getUsername().isBlank()) {
+            if (userRepository.findByUsername(userUpdateDTO.getUsername()).isPresent()) {
+                throw new UsernameAlreadyExistsException("Имя пользователя уже занято.");
+            }
+            currentUser.setUsername(userUpdateDTO.getUsername());
+        }
+
+        if (userUpdateDTO.getPassword() != null && !userUpdateDTO.getPassword().isBlank()) {
+            currentUser.setPassword(passwordEncoder.encode(userUpdateDTO.getPassword()));
+        }
+
+        User updatedUser = userRepository.save(currentUser);
+        String newToken = jwtService.generateToken(updatedUser);
+        return new UserUpdateResponseDTO(newToken, entityMapper.toUserDTO(updatedUser));
     }
 }

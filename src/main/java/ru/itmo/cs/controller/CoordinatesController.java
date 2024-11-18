@@ -21,8 +21,8 @@ public class CoordinatesController {
     public ResponseEntity<PaginationResponseDTO<CoordinatesDTO>> getAllCoordinates(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "x") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir) {
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
 
         Page<CoordinatesDTO> coordinatesPage = coordinatesService.getAllCoordinates(page, size, sortBy, sortDir);
 

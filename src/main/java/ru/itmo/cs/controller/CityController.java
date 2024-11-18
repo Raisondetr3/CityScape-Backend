@@ -28,8 +28,8 @@ public class CityController {
             @RequestParam(required = false) String governorName,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "8") int size,
-            @RequestParam(defaultValue = "name") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir) {
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
 
         Page<CityDTO> citiesPage = cityService.getAllCities(
                 name, climate, government, standardOfLiving, governorName, page, size, sortBy, sortDir);

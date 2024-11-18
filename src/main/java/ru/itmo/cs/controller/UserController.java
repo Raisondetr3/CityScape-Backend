@@ -7,6 +7,7 @@ import ru.itmo.cs.dto.*;
 import ru.itmo.cs.entity.User;
 import ru.itmo.cs.service.JwtService;
 import ru.itmo.cs.service.UserService;
+import ru.itmo.cs.util.EntityMapper;
 
 import java.util.List;
 
@@ -17,6 +18,8 @@ public class UserController {
 
     private final UserService userService;
     private final JwtService jwtService;
+
+    private final EntityMapper entityMapper;
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserRegistrationDTO registrationDTO) {
@@ -68,5 +71,18 @@ public class UserController {
     public ResponseEntity<String> rejectAdmin(@RequestBody AdminApprovalDTO approvalDTO) {
         userService.rejectAdminRequest(approvalDTO.getUserId());
         return ResponseEntity.ok("Admin request rejected");
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity<UserDTO> getCurrentUser() {
+        User currentUser = userService.getCurrentUser();
+        UserDTO currentUserDTO = entityMapper.toUserDTO(currentUser);
+        return ResponseEntity.ok(currentUserDTO);
+    }
+
+    @PutMapping("/current")
+    public ResponseEntity<UserUpdateResponseDTO> updateCurrentUser(@RequestBody UserUpdateDTO userUpdateDTO) {
+        UserUpdateResponseDTO response = userService.updateCurrentUser(userUpdateDTO);
+        return ResponseEntity.ok(response);
     }
 }
