@@ -9,7 +9,7 @@ CityScape Backend – это серверная часть приложения 
 - **База данных**: PostgreSQL  
 - **Тестирование**: JUnit 5, Mockito  
 - **CI**: GitHub Actions  
-- **Инструменты**: Maven, Liquibase, JWT для аутентификации  
+- **Инструменты**: Maven, JWT для аутентификации  
 
 ### Основные возможности
 
