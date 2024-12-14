@@ -172,5 +172,4 @@ public class CityService {
             throw new EntityNotFoundException("No cities found");
         }
     }
-
 }
