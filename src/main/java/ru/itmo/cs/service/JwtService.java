@@ -18,18 +18,16 @@ import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
 
+@Getter
 @Service
 @Slf4j
 public class JwtService {
 
-    @Getter
     @Value("${security.jwt.secret-key}")
     private String secretKey;
 
-    @Getter
     @Value("${security.jwt.expiration-time}")
     private long jwtExpiration;
-
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
