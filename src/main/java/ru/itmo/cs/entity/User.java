@@ -1,5 +1,6 @@
 package ru.itmo.cs.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,16 +13,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import ru.itmo.cs.entity.enums.AdminRequestStatus;
 import ru.itmo.cs.entity.enums.UserRole;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "users", schema = "s367911")
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,6 +42,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private AdminRequestStatus adminRequestStatus = AdminRequestStatus.NONE;
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));

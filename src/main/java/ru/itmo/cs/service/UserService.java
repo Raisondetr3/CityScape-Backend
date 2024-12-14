@@ -1,6 +1,5 @@
 package ru.itmo.cs.service;
 
-import io.jsonwebtoken.Jwt;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.itmo.cs.adminStatus.AdminRequestStatusHandler;
-import ru.itmo.cs.dto.*;
+import ru.itmo.cs.dto.auth.*;
 import ru.itmo.cs.entity.City;
 import ru.itmo.cs.entity.User;
 import ru.itmo.cs.entity.enums.AdminRequestStatus;

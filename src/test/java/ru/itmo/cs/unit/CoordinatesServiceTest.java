@@ -8,12 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
-import ru.itmo.cs.dto.CoordinatesDTO;
+import ru.itmo.cs.dto.coordinates.CoordinatesDTO;
 import ru.itmo.cs.entity.City;
 import ru.itmo.cs.entity.Coordinates;
 import ru.itmo.cs.entity.User;
 import ru.itmo.cs.entity.audit.AuditOperation;
 import ru.itmo.cs.exception.EntityDeletionException;
+import ru.itmo.cs.exception.ResourceNotFoundException;
 import ru.itmo.cs.repository.CoordinatesRepository;
 import ru.itmo.cs.service.AuditService;
 import ru.itmo.cs.service.CoordinatesService;
@@ -116,8 +117,8 @@ class CoordinatesServiceTest {
         when(coordinatesRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
                 () -> coordinatesService.getCoordinatesById(1L),
                 "Ожидалось исключение для отсутствующих координат"
         );
@@ -175,8 +176,8 @@ class CoordinatesServiceTest {
         when(coordinatesRepository.findById(coordinatesDTO.getId())).thenReturn(Optional.empty());
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
                 () -> coordinatesService.updateCoordinates(coordinatesDTO),
                 "Ожидалось исключение для отсутствующих координат"
         );

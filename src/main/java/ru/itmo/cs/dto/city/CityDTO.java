@@ -1,4 +1,4 @@
-package ru.itmo.cs.dto;
+package ru.itmo.cs.dto.city;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.itmo.cs.dto.coordinates.CoordinatesDTO;
+import ru.itmo.cs.dto.human.HumanDTO;
 import ru.itmo.cs.entity.*;
 import ru.itmo.cs.entity.enums.Climate;
 import ru.itmo.cs.entity.enums.Government;
@@ -53,5 +55,3 @@ public class CityDTO {
 
     private LocalDate creationDate;
 }
-
-

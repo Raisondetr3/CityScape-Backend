@@ -13,11 +13,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.itmo.cs.adminStatus.AdminRequestStatusHandler;
-import ru.itmo.cs.dto.UserLoginDTO;
-import ru.itmo.cs.dto.UserRegistrationDTO;
+import ru.itmo.cs.dto.auth.UserLoginDTO;
+import ru.itmo.cs.dto.auth.UserRegistrationDTO;
 import ru.itmo.cs.entity.User;
 import ru.itmo.cs.entity.enums.AdminRequestStatus;
 import ru.itmo.cs.entity.enums.UserRole;
+import ru.itmo.cs.exception.ResourceNotFoundException;
 import ru.itmo.cs.repository.UserRepository;
 import ru.itmo.cs.service.JwtService;
 import ru.itmo.cs.service.UserService;

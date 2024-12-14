@@ -5,11 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.itmo.cs.dto.HumanDTO;
-import ru.itmo.cs.dto.HumanFilterCriteria;
+import ru.itmo.cs.dto.human.HumanDTO;
+import ru.itmo.cs.dto.human.HumanFilterCriteria;
 import ru.itmo.cs.entity.audit.AuditOperation;
 import ru.itmo.cs.entity.Human;
 import ru.itmo.cs.exception.EntityDeletionException;
+import ru.itmo.cs.exception.ResourceNotFoundException;
 import ru.itmo.cs.repository.HumanRepository;
 import ru.itmo.cs.util.EntityMapper;
 import ru.itmo.cs.util.filter.FilterProcessor;
@@ -37,7 +38,7 @@ public class HumanService {
     @Transactional(readOnly = true)
     public HumanDTO getHumanById(Long id) {
         Human human = humanRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Human не найден"));
+                .orElseThrow(() -> new ResourceNotFoundException("Human не найден"));
         return entityMapper.toHumanDTO(human);
     }
 
@@ -53,7 +54,7 @@ public class HumanService {
     @Transactional
     public HumanDTO updateHuman(HumanDTO humanDTO) {
         Human human = humanRepository.findById(humanDTO.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Human не найден"));
+                .orElseThrow(() -> new ResourceNotFoundException("Human не найден"));
 
         human.setName(humanDTO.getName());
         human.setAge(humanDTO.getAge());
@@ -70,7 +71,7 @@ public class HumanService {
         // Determining whether to create a new object or update an existing one
         if (humanDTO.getId() != null) {
             Human existingHuman = humanRepository.findById(humanDTO.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Human не найден"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Human не найден"));
 
             existingHuman.setName(humanDTO.getName());
             existingHuman.setAge(humanDTO.getAge());
@@ -92,9 +93,9 @@ public class HumanService {
     @Transactional
     public void deleteHuman(Long id) {
         Human human = humanRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Human не найден"));
+                .orElseThrow(() -> new ResourceNotFoundException("Human не найден"));
 
-        if (!human.getCities().isEmpty()) {
+        if (human.getCities() != null && !human.getCities().isEmpty()) {
             throw new EntityDeletionException("Невозможно удалить Human," +
                     " поскольку он связан с одним или несколькими Cities");
         }
@@ -104,5 +105,3 @@ public class HumanService {
         humanRepository.delete(human);
     }
 }
-
-

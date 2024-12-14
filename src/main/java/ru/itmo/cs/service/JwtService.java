@@ -23,10 +23,10 @@ import java.util.function.Function;
 @Slf4j
 public class JwtService {
 
-    @Value("${security.jwt.secret-key}")
+    @Value("${spring.security.jwt.secret-key}")
     private String secretKey;
 
-    @Value("${security.jwt.expiration-time}")
+    @Value("${spring.security.jwt.expiration-time}")
     private long jwtExpiration;
 
     public String extractUsername(String token) {

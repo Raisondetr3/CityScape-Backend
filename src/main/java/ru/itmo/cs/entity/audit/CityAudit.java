@@ -11,7 +11,7 @@ import ru.itmo.cs.entity.audit.AuditOperation;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "city_audit", schema = "s367911")
+@Table(name = "city_audit")
 @Getter
 @Setter
 @NoArgsConstructor

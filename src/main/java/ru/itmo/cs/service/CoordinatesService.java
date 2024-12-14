@@ -5,10 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.itmo.cs.dto.CoordinatesDTO;
+import ru.itmo.cs.dto.coordinates.CoordinatesDTO;
 import ru.itmo.cs.entity.audit.AuditOperation;
 import ru.itmo.cs.entity.Coordinates;
 import ru.itmo.cs.exception.EntityDeletionException;
+import ru.itmo.cs.exception.ResourceNotFoundException;
 import ru.itmo.cs.repository.CoordinatesRepository;
 import ru.itmo.cs.util.EntityMapper;
 import ru.itmo.cs.util.pagination.PaginationHandler;
@@ -55,7 +56,7 @@ public class CoordinatesService {
     @Transactional(readOnly = true)
     public CoordinatesDTO getCoordinatesById(Long id) {
         Coordinates coordinates = coordinatesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Coordinates не найден"));
+                .orElseThrow(() -> new ResourceNotFoundException("Coordinates не найден"));
         return entityMapper.toCoordinatesDTO(coordinates);
     }
 
@@ -71,7 +72,7 @@ public class CoordinatesService {
     @Transactional
     public CoordinatesDTO updateCoordinates( CoordinatesDTO coordinatesDTO) {
         Coordinates coordinates = coordinatesRepository.findById(coordinatesDTO.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Coordinates не найден"));
+                .orElseThrow(() -> new ResourceNotFoundException("Coordinates не найден"));
 
         coordinates.setX(coordinatesDTO.getX());
         coordinates.setY(coordinatesDTO.getY());
@@ -88,7 +89,7 @@ public class CoordinatesService {
         // Determining whether to create a new object or update an existing one
         if (coordinatesDTO.getId() != null) {
             Coordinates existingCoordinates = coordinatesRepository.findById(coordinatesDTO.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Coordinates не найден"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Coordinates не найден"));
 
             existingCoordinates.setX(coordinatesDTO.getX());
             existingCoordinates.setY(coordinatesDTO.getY());
@@ -109,9 +110,9 @@ public class CoordinatesService {
     @Transactional
     public void deleteCoordinates(Long id) {
         Coordinates coordinates = coordinatesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Coordinates не найден"));
+                .orElseThrow(() -> new ResourceNotFoundException("Coordinates не найден"));
 
-        if (!coordinates.getCities().isEmpty()) {
+        if (coordinates.getCities() != null && !coordinates.getCities().isEmpty()) {
             throw new EntityDeletionException("Невозможно удалить Coordinates," +
                     " поскольку они связаны с одним или несколькими Cities");
         }
@@ -121,5 +122,3 @@ public class CoordinatesService {
         coordinatesRepository.delete(coordinates);
     }
 }
-
-

@@ -1,5 +1,6 @@
 package ru.itmo.cs.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "city", schema = "s367911")
+@Table(name = "city")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -81,5 +82,3 @@ public class City {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<CityAudit> audits;
 }
-
-

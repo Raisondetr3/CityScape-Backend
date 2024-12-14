@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import ru.itmo.cs.dto.HumanDTO;
-import ru.itmo.cs.dto.HumanFilterCriteria;
+import ru.itmo.cs.dto.human.HumanDTO;
+import ru.itmo.cs.dto.human.HumanFilterCriteria;
 import ru.itmo.cs.repository.HumanRepository;
 import ru.itmo.cs.util.EntityMapper;
 

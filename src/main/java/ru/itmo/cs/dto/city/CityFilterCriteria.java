@@ -1,4 +1,4 @@
-package ru.itmo.cs.dto;
+package ru.itmo.cs.dto.city;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

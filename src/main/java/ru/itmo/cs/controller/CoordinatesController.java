@@ -1,15 +1,14 @@
 package ru.itmo.cs.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.itmo.cs.dto.CoordinatesDTO;
+import ru.itmo.cs.dto.coordinates.CoordinatesDTO;
 import ru.itmo.cs.dto.PaginationResponseDTO;
 import ru.itmo.cs.service.CoordinatesService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/coordinates")
@@ -42,13 +41,13 @@ public class CoordinatesController {
     }
 
     @PostMapping
-    public ResponseEntity<CoordinatesDTO> createCoordinates(@RequestBody CoordinatesDTO coordinatesDTO) {
+    public ResponseEntity<CoordinatesDTO> createCoordinates(@RequestBody @Valid CoordinatesDTO coordinatesDTO) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(coordinatesService.createCoordinates(coordinatesDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CoordinatesDTO> updateCoordinates(@RequestBody CoordinatesDTO coordinatesDTO) {
+    public ResponseEntity<CoordinatesDTO> updateCoordinates(@RequestBody @Valid CoordinatesDTO coordinatesDTO) {
         return ResponseEntity.ok(coordinatesService.updateCoordinates( coordinatesDTO));
     }
 

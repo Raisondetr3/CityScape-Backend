@@ -8,13 +8,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
-import ru.itmo.cs.dto.HumanDTO;
-import ru.itmo.cs.dto.HumanFilterCriteria;
+import ru.itmo.cs.dto.human.HumanDTO;
+import ru.itmo.cs.dto.human.HumanFilterCriteria;
 import ru.itmo.cs.entity.City;
 import ru.itmo.cs.entity.Human;
 import ru.itmo.cs.entity.User;
 import ru.itmo.cs.entity.audit.AuditOperation;
 import ru.itmo.cs.exception.EntityDeletionException;
+import ru.itmo.cs.exception.ResourceNotFoundException;
 import ru.itmo.cs.repository.HumanRepository;
 import ru.itmo.cs.service.AuditService;
 import ru.itmo.cs.service.HumanService;
@@ -124,8 +125,8 @@ class HumanServiceTest {
         when(humanRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
                 () -> humanService.getHumanById(1L),
                 "Ожидалось исключение для отсутствующего человека"
         );
@@ -183,8 +184,8 @@ class HumanServiceTest {
         when(humanRepository.findById(humanDTO.getId())).thenReturn(Optional.empty());
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
                 () -> humanService.updateHuman(humanDTO),
                 "Ожидалось исключение для отсутствующего человека"
         );
@@ -216,7 +217,7 @@ class HumanServiceTest {
     void shouldThrowExceptionWhenDeletingHumanLinkedToCities() {
         // Arrange
         Human mockedHuman = mock(Human.class); // Создаём мок-объект Human
-        when(mockedHuman.getCities()).thenReturn(List.of(new City())); // Замокировали getCities(), возвращающий список с городами
+        when(mockedHuman.getCities()).thenAnswer(invocation -> List.of(new City())); // Используем thenAnswer
         when(humanRepository.findById(1L)).thenReturn(Optional.of(mockedHuman)); // Замокировали метод репозитория
 
         // Act & Assert
@@ -232,8 +233,9 @@ class HumanServiceTest {
         );
 
         verify(humanRepository).findById(1L);
-        verify(mockedHuman).getCities();
+        verify(mockedHuman, times(2)).getCities(); // Указываем, что метод вызывается дважды
         verifyNoInteractions(auditService);
         verifyNoMoreInteractions(humanRepository);
     }
+
 }

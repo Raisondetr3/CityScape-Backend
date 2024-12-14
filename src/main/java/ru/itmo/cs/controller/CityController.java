@@ -1,11 +1,12 @@
 package ru.itmo.cs.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.itmo.cs.dto.CityDTO;
+import ru.itmo.cs.dto.city.CityDTO;
 import ru.itmo.cs.dto.PaginationResponseDTO;
 import ru.itmo.cs.entity.enums.Climate;
 import ru.itmo.cs.entity.enums.Government;
@@ -50,13 +51,13 @@ public class CityController {
     }
 
     @PostMapping
-    public ResponseEntity<CityDTO> createCity(@RequestBody CityDTO cityDTO) {
+    public ResponseEntity<CityDTO> createCity(@RequestBody @Valid CityDTO cityDTO) {
         CityDTO createdCity = cityService.createCity(cityDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCity);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CityDTO> updateCity(@PathVariable Long id, @RequestBody CityDTO cityDTO) {
+    public ResponseEntity<CityDTO> updateCity(@PathVariable Long id, @RequestBody @Valid CityDTO cityDTO) {
         CityDTO updatedCity = cityService.updateCity(id, cityDTO);
         return ResponseEntity.ok(updatedCity);
     }

@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.itmo.cs.entity.audit.CoordinatesAudit;
 
+import java.util.ArrayList;
 import java.util.List;
 
-
 @Entity
-@Table(name = "coordinates", schema = "s367911")
+@Table(name = "coordinates")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -31,14 +31,13 @@ public class Coordinates {
     private Double y;
 
     @OneToMany(mappedBy = "coordinates")
-    private List<City> cities;
+    private List<City> cities  = new ArrayList<>();
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
 
-    @OneToMany(mappedBy = "coordinates", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "coordinates")
     private List<CoordinatesAudit> audits;
 }
-

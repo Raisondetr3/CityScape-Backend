@@ -11,10 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
-import ru.itmo.cs.dto.CityDTO;
-import ru.itmo.cs.dto.CityFilterCriteria;
-import ru.itmo.cs.dto.CoordinatesDTO;
-import ru.itmo.cs.dto.HumanDTO;
+import ru.itmo.cs.dto.city.CityDTO;
+import ru.itmo.cs.dto.city.CityFilterCriteria;
+import ru.itmo.cs.dto.coordinates.CoordinatesDTO;
+import ru.itmo.cs.dto.human.HumanDTO;
 import ru.itmo.cs.entity.City;
 import ru.itmo.cs.entity.Coordinates;
 import ru.itmo.cs.entity.Human;
@@ -23,6 +23,7 @@ import ru.itmo.cs.entity.audit.AuditOperation;
 import ru.itmo.cs.entity.enums.Climate;
 import ru.itmo.cs.entity.enums.Government;
 import ru.itmo.cs.entity.enums.StandardOfLiving;
+import ru.itmo.cs.exception.ResourceNotFoundException;
 import ru.itmo.cs.repository.CityRepository;
 import ru.itmo.cs.service.*;
 import ru.itmo.cs.util.EntityMapper;
@@ -277,8 +278,8 @@ class CityServiceTest {
         when(cityRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
                 () -> cityService.getCityById(1L),
                 "Ожидалось исключение при отсутствии города с данным ID"
         );

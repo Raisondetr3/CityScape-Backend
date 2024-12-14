@@ -2,10 +2,10 @@ package ru.itmo.cs.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.itmo.cs.dto.CityDTO;
-import ru.itmo.cs.dto.CoordinatesDTO;
-import ru.itmo.cs.dto.HumanDTO;
-import ru.itmo.cs.dto.UserDTO;
+import ru.itmo.cs.dto.city.CityDTO;
+import ru.itmo.cs.dto.coordinates.CoordinatesDTO;
+import ru.itmo.cs.dto.human.HumanDTO;
+import ru.itmo.cs.dto.auth.UserDTO;
 import ru.itmo.cs.entity.*;
 import ru.itmo.cs.entity.audit.AuditOperation;
 import ru.itmo.cs.entity.audit.CityAudit;

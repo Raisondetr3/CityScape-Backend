@@ -6,23 +6,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.itmo.cs.dto.CityDTO;
-import ru.itmo.cs.dto.CityFilterCriteria;
+import ru.itmo.cs.dto.city.CityDTO;
+import ru.itmo.cs.dto.city.CityFilterCriteria;
 import ru.itmo.cs.entity.*;
 import ru.itmo.cs.entity.audit.AuditOperation;
-import ru.itmo.cs.entity.audit.CityAudit;
 import ru.itmo.cs.entity.enums.Climate;
 import ru.itmo.cs.entity.enums.Government;
 import ru.itmo.cs.entity.enums.StandardOfLiving;
+import ru.itmo.cs.exception.ResourceNotFoundException;
 import ru.itmo.cs.repository.CityRepository;
-import ru.itmo.cs.repository.audit.CityAuditRepository;
 import ru.itmo.cs.util.EntityMapper;
 import ru.itmo.cs.util.filter.FilterProcessor;
 import ru.itmo.cs.util.pagination.PaginationHandler;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +53,7 @@ public class CityService {
     @Transactional(readOnly = true)
     public CityDTO getCityById(Long id) {
         City city = cityRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("City не найден"));
+                .orElseThrow(() -> new ResourceNotFoundException("City не найден"));
         return entityMapper.toCityDTO(city);
     }
 
@@ -81,7 +78,7 @@ public class CityService {
     @Transactional
     public CityDTO updateCity(Long id, CityDTO cityDTO) {
         City existingCity = cityRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("City не найден"));
+                .orElseThrow(() -> new ResourceNotFoundException("City не найден"));
 
         if (!userService.canModifyCity(existingCity)) {
             throw new SecurityException("У вас нет разрешения на изменение этого City");
@@ -107,7 +104,7 @@ public class CityService {
     @Transactional
     public void deleteCity(Long id) {
         City city = cityRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("City не найден"));
+                .orElseThrow(() -> new ResourceNotFoundException("City не найден"));
 
         if (!userService.canModifyCity(city)) {
             throw new SecurityException("У вас нет разрешения на удаление этого City");

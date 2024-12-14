@@ -1,4 +1,4 @@
-package ru.itmo.cs.dto;
+package ru.itmo.cs.dto.auth;
 
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

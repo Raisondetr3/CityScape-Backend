@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.itmo.cs.dto.*;
+import ru.itmo.cs.dto.auth.*;
 import ru.itmo.cs.entity.User;
 import ru.itmo.cs.service.JwtService;
 import ru.itmo.cs.service.UserService;

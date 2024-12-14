@@ -1,31 +1,26 @@
-package ru.itmo.cs.dto;
+package ru.itmo.cs.dto.coordinates;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.itmo.cs.entity.User;
 
-import java.time.ZonedDateTime;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HumanDTO {
+public class CoordinatesDTO {
     private Long id;
+
     @NotNull
-    @Size(min = 1)
-    private String name;
-
     @Min(1)
-    private int age;
+    @Max(820)
+    private Long x;
 
-    @Min(1)
-    private int height;
-
-    private ZonedDateTime birthday;
+    @NotNull
+    private Double y;
 
     private User createdBy;
 }

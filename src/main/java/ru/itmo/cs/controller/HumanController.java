@@ -1,15 +1,14 @@
 package ru.itmo.cs.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.itmo.cs.dto.HumanDTO;
+import ru.itmo.cs.dto.human.HumanDTO;
 import ru.itmo.cs.dto.PaginationResponseDTO;
 import ru.itmo.cs.service.HumanService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/humans")
@@ -43,13 +42,13 @@ public class HumanController {
     }
 
     @PostMapping
-    public ResponseEntity<HumanDTO> createHuman(@RequestBody HumanDTO humanDTO) {
+    public ResponseEntity<HumanDTO> createHuman(@RequestBody @Valid HumanDTO humanDTO) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(humanService.createHuman(humanDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HumanDTO> updateHuman(@RequestBody HumanDTO humanDTO) {
+    public ResponseEntity<HumanDTO> updateHuman(@RequestBody @Valid HumanDTO humanDTO) {
         return ResponseEntity.ok(humanService.updateHuman(humanDTO));
     }
 
@@ -59,5 +58,3 @@ public class HumanController {
         return ResponseEntity.noContent().build();
     }
 }
-
-
