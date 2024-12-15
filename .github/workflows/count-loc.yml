@@ -2,7 +2,8 @@ name: Count Lines of Code
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "*"
 
 jobs:
   cloc:
