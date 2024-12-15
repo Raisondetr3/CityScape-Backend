@@ -59,6 +59,8 @@ public class CityService {
 
     @Transactional
     public CityDTO createCity(CityDTO cityDTO) {
+        validateCityUniqueness(cityDTO);
+
         Coordinates savedCoordinates = coordinatesService
                 .createOrUpdateCoordinatesForCity(cityDTO.getCoordinates());
         Human savedHuman = humanService
@@ -79,6 +81,8 @@ public class CityService {
     public CityDTO updateCity(Long id, CityDTO cityDTO) {
         City existingCity = cityRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("City не найден"));
+
+        validateCityUniqueness(cityDTO);
 
         if (!userService.canModifyCity(existingCity)) {
             throw new SecurityException("У вас нет разрешения на изменение этого City");
@@ -167,6 +171,26 @@ public class CityService {
                                                       0);
         } else {
             throw new EntityNotFoundException("No cities found");
+        }
+    }
+
+    private void validateCityUniqueness(CityDTO cityDTO) {
+        boolean isNameDuplicate = cityRepository.findByFilters(cityDTO.getName(), null, Pageable.unpaged())
+                .stream()
+                .anyMatch(city -> city.getCoordinates().getId().equals(cityDTO.getCoordinates().getId()));
+
+        if (isNameDuplicate) {
+            throw new IllegalArgumentException("Город с таким именем и координатами уже существует");
+        }
+
+        boolean isNameGovernorDuplicate = cityRepository.findByFilters(cityDTO.getName(),
+                        cityDTO.getGovernor().getName(),
+                        Pageable.unpaged())
+                .stream()
+                .anyMatch(city -> city.getGovernor().getId().equals(cityDTO.getGovernor().getId()));
+
+        if (isNameGovernorDuplicate) {
+            throw new IllegalArgumentException("Город с таким именем и губернатором уже существует");
         }
     }
 }

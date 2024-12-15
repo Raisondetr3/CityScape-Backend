@@ -16,11 +16,20 @@ import java.util.Optional;
 @Repository
 public interface CityRepository extends JpaRepository<City, Long> {
     Optional<City> findById(Long id);
+
     Optional<City> findFirstByGovernment(Government government);
+
     @Query("SELECT SUM(c.metersAboveSeaLevel) FROM City c")
     Long sumMetersAboveSeaLevel();
+
     @Query("SELECT c FROM City c WHERE c.climate > :climate")
     List<City> findByClimateGreaterThan(@Param("climate") Climate climate);
+
+    @Query("SELECT c FROM City c WHERE c.name = :name AND c.coordinates.id = :coordinatesId")
+    Optional<City> findByNameAndCoordinates(@Param("name") String name, @Param("coordinatesId") Long coordinatesId);
+
+    @Query("SELECT c FROM City c WHERE c.name = :name AND c.governor.id = :governorId")
+    Optional<City> findByNameAndGovernor(@Param("name") String name, @Param("governorId") Long governorId);
 
     City findTopByOrderByAreaDesc();
     @Query("SELECT c FROM City c " +

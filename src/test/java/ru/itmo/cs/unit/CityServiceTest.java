@@ -33,10 +33,13 @@ import ru.itmo.cs.util.pagination.PaginationHandler;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -125,11 +128,17 @@ class CityServiceTest {
         city.setPopulation(5000L);
     }
 
-
     @Test
     @DisplayName("Успешное создание города")
     void shouldCreateCitySuccessfully() {
         // Arrange
+        Page<City> emptyPage = new PageImpl<>(Collections.emptyList());
+        when(cityRepository.findByFilters("Test City", null, Pageable.unpaged()))
+                .thenReturn(emptyPage);
+        when(cityRepository.findByFilters("Test City", "John Doe", Pageable.unpaged()))
+                .thenReturn(emptyPage);
+
+        // Настройка других моков
         when(userService.getCurrentUser()).thenReturn(user);
         when(coordinatesService.createOrUpdateCoordinatesForCity(coordinatesDTO)).thenReturn(coordinates);
         when(humanService.createOrUpdateHumanForCity(humanDTO)).thenReturn(human);
@@ -150,8 +159,23 @@ class CityServiceTest {
     @DisplayName("Ошибка при попытке обновления города без прав")
     void shouldThrowExceptionWhenUpdatingCityWithoutPermission() {
         // Arrange
+        Pageable unpaged = Pageable.unpaged();
+        Page<City> emptyPage = new PageImpl<>(List.of());
+
         when(cityRepository.findById(1L)).thenReturn(Optional.of(city));
         when(userService.canModifyCity(city)).thenReturn(false);
+
+        when(cityRepository.findByFilters(
+                eq(cityDTO.getName()),
+                eq(null),
+                eq(unpaged)))
+                .thenReturn(emptyPage);
+
+        when(cityRepository.findByFilters(
+                eq(cityDTO.getName()),
+                eq(cityDTO.getGovernor().getName()),
+                eq(unpaged)))
+                .thenReturn(emptyPage);
 
         // Act & Assert
         SecurityException exception = assertThrows(
@@ -164,6 +188,7 @@ class CityServiceTest {
         verify(cityRepository).findById(1L);
         verifyNoInteractions(auditService);
     }
+
 
     @Test
     @DisplayName("Успешное удаление города")
@@ -364,5 +389,91 @@ class CityServiceTest {
         // Assert
         assertNotNull(result);
         assertEquals(expectedPage, result);
+    }
+
+    @Test
+    @DisplayName("Ошибка при создании города с дублирующим именем и координатами")
+    void shouldThrowErrorForDuplicateCityNameWithinCoordinates() {
+        // Arrange
+        Pageable unpaged = Pageable.unpaged();
+        Page<City> existingCitiesByNameAndCoordinates = new PageImpl<>(List.of(city)); // Дубликат по имени и координатам
+
+        when(cityRepository.findByFilters(
+                eq(cityDTO.getName()),
+                eq(null),
+                eq(unpaged)))
+                .thenReturn(existingCitiesByNameAndCoordinates); // Первый if вызывает ошибку
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> cityService.createCity(cityDTO),
+                "Ожидалось исключение при создании города с дублирующим именем и координатами"
+        );
+
+        assertEquals("Город с таким именем и координатами уже существует", exception.getMessage());
+
+        // Verify mocks
+        verify(cityRepository).findByFilters(eq(cityDTO.getName()), eq(null), eq(unpaged));
+        verifyNoInteractions(auditService);
+    }
+
+    @Test
+    @DisplayName("Ошибка при создании города с дублирующим именем и губернатором")
+    void shouldThrowErrorForDuplicateCityNameAndGovernor() {
+        // Arrange
+        Pageable unpaged = Pageable.unpaged();
+        Page<City> noCitiesByNameAndCoordinates = new PageImpl<>(List.of());
+        Page<City> existingCitiesByNameAndGovernor = new PageImpl<>(List.of(city));
+
+        when(cityRepository.findByFilters(
+                eq(cityDTO.getName()),
+                eq(null),
+                eq(unpaged)))
+                .thenReturn(noCitiesByNameAndCoordinates);
+
+        when(cityRepository.findByFilters(
+                eq(cityDTO.getName()),
+                eq(cityDTO.getGovernor().getName()),
+                eq(unpaged)))
+                .thenReturn(existingCitiesByNameAndGovernor);
+
+        // Act & Assert
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> cityService.createCity(cityDTO),
+                "Ожидалось исключение при создании города с дублирующим именем и губернатором"
+        );
+
+        assertEquals("Город с таким именем и губернатором уже существует", exception.getMessage());
+
+        verify(cityRepository).findByFilters(eq(cityDTO.getName()), eq(null), eq(unpaged));
+        verify(cityRepository).findByFilters(eq(cityDTO.getName()), eq(cityDTO.getGovernor().getName()), eq(unpaged));
+        verifyNoInteractions(auditService);
+    }
+
+    @Test
+    @DisplayName("Успешное создание города при уникальных данных")
+    void shouldCreateCityWhenDataIsUnique() {
+        // Arrange
+        Page<City> emptyPage = new PageImpl<>(Collections.emptyList());
+        when(cityRepository.findByFilters("Test City", null, Pageable.unpaged()))
+                .thenReturn(emptyPage);
+        when(cityRepository.findByFilters("Test City", "John Doe", Pageable.unpaged()))
+                .thenReturn(emptyPage);
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(coordinatesService.createOrUpdateCoordinatesForCity(coordinatesDTO)).thenReturn(coordinates);
+        when(humanService.createOrUpdateHumanForCity(humanDTO)).thenReturn(human);
+        when(entityMapper.toCityEntity(cityDTO, coordinates, human)).thenReturn(city);
+        when(cityRepository.save(city)).thenReturn(city);
+        when(entityMapper.toCityDTO(city)).thenReturn(cityDTO);
+
+        // Act
+        CityDTO result = cityService.createCity(cityDTO);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(cityDTO, result);
+        verify(auditService).auditCity(city, AuditOperation.CREATE);
     }
 }

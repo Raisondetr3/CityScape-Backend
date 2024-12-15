@@ -262,5 +262,45 @@ class CityControllerTest extends IntegrationTestBase {
                         .header("Authorization", token))
                 .andExpect(status().isForbidden());
     }
-}
 
+    @Test
+    @DisplayName("Ошибка при создании города с дублирующим именем и координатами")
+    void shouldFailToCreateCityWithDuplicateNameAndCoordinates() throws Exception {
+        String token = generateToken(defaultUser);
+
+        CityDTO duplicateCity = new CityDTO(
+                null, defaultCity.getName(), 300.0, 3000L, Climate.OCEANIC,
+                Government.JUNTA, new CoordinatesDTO(defaultCoordinates.getId(), defaultCoordinates.getX(), defaultCoordinates.getY(), null),
+                false, 200L, StandardOfLiving.MEDIUM, null,
+                new HumanDTO(null, "Another Governor", 40, 170, null, null), null, null
+        );
+
+        mockMvc.perform(post("/api/cities")
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(duplicateCity)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Город с таким именем и координатами уже существует"));
+    }
+
+    @Test
+    @DisplayName("Ошибка при создании города с дублирующим именем и губернатором")
+    void shouldFailToCreateCityWithDuplicateNameAndGovernor() throws Exception {
+        String token = generateToken(defaultUser);
+
+        CityDTO duplicateCity = new CityDTO(
+                null, defaultCity.getName(), 300.0, 3000L, Climate.OCEANIC,
+                Government.JUNTA, new CoordinatesDTO(null, 300L, 300.5, null),
+                false, 200L, StandardOfLiving.MEDIUM, null,
+                new HumanDTO(defaultGovernor.getId(), defaultGovernor.getName(), defaultGovernor.getAge(),
+                        defaultGovernor.getHeight(), null, null), null, null
+        );
+
+        mockMvc.perform(post("/api/cities")
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(duplicateCity)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Город с таким именем и губернатором уже существует"));
+    }
+}
