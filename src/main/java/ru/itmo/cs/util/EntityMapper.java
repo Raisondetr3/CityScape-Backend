@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.itmo.cs.dto.city.CityDTO;
 import ru.itmo.cs.dto.coordinates.CoordinatesDTO;
+import ru.itmo.cs.dto.ImportOperationDTO;
 import ru.itmo.cs.dto.human.HumanDTO;
 import ru.itmo.cs.dto.auth.UserDTO;
 import ru.itmo.cs.entity.*;
@@ -11,6 +12,7 @@ import ru.itmo.cs.entity.audit.AuditOperation;
 import ru.itmo.cs.entity.audit.CityAudit;
 import ru.itmo.cs.entity.audit.CoordinatesAudit;
 import ru.itmo.cs.entity.audit.HumanAudit;
+import ru.itmo.cs.entity.enums.ImportStatus;
 import ru.itmo.cs.service.CoordinatesService;
 import ru.itmo.cs.service.HumanService;
 import ru.itmo.cs.service.UserService;
@@ -87,6 +89,17 @@ public class EntityMapper {
         return userDTO;
     }
 
+    public ImportOperationDTO toImportOperationDTO(ImportOperation operation) {
+        ImportOperationDTO dto = new ImportOperationDTO();
+        dto.setId(operation.getId());
+        dto.setStatus(operation.getStatus());
+        dto.setTimestamp(operation.getTimestamp());
+        dto.setObjectsAdded(operation.getObjectsAdded());
+        dto.setUsername(operation.getUser().getUsername());
+        return dto;
+    }
+
+
     public City toCityEntity(CityDTO cityDTO, Coordinates coordinates, Human governor) {
         City city = new City();
         city.setName(cityDTO.getName());
@@ -147,5 +160,13 @@ public class EntityMapper {
         coordinatesAudit.setOperationTime(LocalDateTime.now());
         return coordinatesAudit;
     }
-}
 
+    public ImportOperation toImportOperationEntity(User user, ImportStatus status, int objectsAdded) {
+        ImportOperation operation = new ImportOperation();
+        operation.setUser(user);
+        operation.setStatus(status);
+        operation.setTimestamp(LocalDateTime.now());
+        operation.setObjectsAdded(objectsAdded);
+        return operation;
+    }
+}

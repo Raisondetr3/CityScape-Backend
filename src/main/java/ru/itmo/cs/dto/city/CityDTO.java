@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CityDTO {
+
     private Long id;
 
     @NotBlank

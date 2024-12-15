@@ -226,4 +226,3 @@ class CoordinatesServiceTest {
         verifyNoMoreInteractions(coordinatesRepository);
     }
 }
-

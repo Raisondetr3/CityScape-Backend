@@ -59,6 +59,7 @@ class CoordinatesControllerTest extends IntegrationTestBase {
 
     private User defaultUser;
     private Coordinates defaultCoordinates;
+
     @BeforeEach
     void setUp() {
         when(jwtService.generateToken(any())).thenReturn("mockedToken");

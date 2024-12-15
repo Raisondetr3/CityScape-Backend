@@ -1,5 +1,6 @@
 package ru.itmo.cs.exception;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -134,13 +135,32 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Object> handleEventNotFoundException(ResourceNotFoundException ex) {
+    public ResponseEntity<ErrorResponseDTO> handleEventNotFoundException(ResourceNotFoundException ex) {
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(
-                HttpStatus.NOT_FOUND.value(), // 409
+                HttpStatus.NOT_FOUND.value(), // 404
                 ex.getMessage(),
                 System.currentTimeMillis()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
-}
 
+    @ExceptionHandler(JsonParsingException.class)
+    public ResponseEntity<ErrorResponseDTO> handleJsonParseException(JsonParsingException ex) {
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
+                HttpStatus.BAD_REQUEST.value(), // 400
+                ex.getMessage(),
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FileReadException.class)
+    public ResponseEntity<ErrorResponseDTO> handleFileReadException(FileReadException ex) {
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(
+                HttpStatus.BAD_REQUEST.value(), // 400
+                ex.getMessage(),
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+}

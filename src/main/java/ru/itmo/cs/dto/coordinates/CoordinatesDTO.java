@@ -12,6 +12,7 @@ import ru.itmo.cs.entity.User;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CoordinatesDTO {
+
     private Long id;
 
     @NotNull
@@ -24,4 +25,3 @@ public class CoordinatesDTO {
 
     private User createdBy;
 }
-
