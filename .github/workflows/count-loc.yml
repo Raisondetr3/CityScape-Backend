@@ -2,8 +2,9 @@ name: Count Lines of Code
 
 on:
   push:
-    branches:
-      - "*"
+    branches-ignore: []
+  pull_request:
+    branches-ignore: []
 
 jobs:
   cloc:
