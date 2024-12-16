@@ -15,6 +15,7 @@ import ru.itmo.cs.entity.audit.HumanAudit;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "human")
@@ -41,11 +42,26 @@ public class Human {
     @OneToMany(mappedBy = "governor")
     private List<City> cities = new ArrayList<>();
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;
 
     @OneToMany(mappedBy = "human")
     private List<HumanAudit> audits;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Human human = (Human) o;
+        return age == human.age &&
+                height == human.height &&
+                Objects.equals(name, human.name) &&
+                Objects.equals(birthday, human.birthday);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age, height, birthday);
+    }
 }

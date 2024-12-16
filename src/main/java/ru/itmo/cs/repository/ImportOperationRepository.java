@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface ImportOperationRepository extends JpaRepository<ImportOperation, Long> {
-    List<ImportOperation> findByUser(User user);
+
     List<ImportOperation> findByStatus(ImportStatus status);
 }

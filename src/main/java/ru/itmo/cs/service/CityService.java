@@ -20,6 +20,7 @@ import ru.itmo.cs.util.filter.FilterProcessor;
 import ru.itmo.cs.util.pagination.PaginationHandler;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -59,50 +60,60 @@ public class CityService {
 
     @Transactional
     public CityDTO createCity(CityDTO cityDTO) {
-        validateCityUniqueness(cityDTO);
+        try {
+            validateCityUniqueness(cityDTO);
 
-        Coordinates savedCoordinates = coordinatesService
-                .createOrUpdateCoordinatesForCity(cityDTO.getCoordinates());
-        Human savedHuman = humanService
-                .createOrUpdateHumanForCity(cityDTO.getGovernor());
+            Coordinates savedCoordinates = coordinatesService
+                    .createOrUpdateCoordinatesForCity(cityDTO.getCoordinates());
+            Human savedHuman = humanService
+                    .createOrUpdateHumanForCity(cityDTO.getGovernor());
 
-        City city = entityMapper.toCityEntity(cityDTO, savedCoordinates, savedHuman);
+            City city = entityMapper.toCityEntity(cityDTO, savedCoordinates, savedHuman);
 
-        city.setCreatedBy(userService.getCurrentUser());
-        city.setCreationDate(LocalDate.now());
+            city.setCreatedBy(userService.getCurrentUser());
+            city.setCreationDate(LocalDate.now());
 
-        City savedCity = cityRepository.save(city);
-        auditService.auditCity(savedCity, AuditOperation.CREATE);
+            City savedCity = cityRepository.saveAndFlush(city);
+            auditService.auditCity(savedCity, AuditOperation.CREATE);
 
-        return entityMapper.toCityDTO(savedCity);
+            return entityMapper.toCityDTO(savedCity);
+        } catch  (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @Transactional
     public CityDTO updateCity(Long id, CityDTO cityDTO) {
-        City existingCity = cityRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("City не найден"));
+        try {
+            City existingCity = cityRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("City не найден"));
 
-        validateCityUniqueness(cityDTO);
+            validateCityUniqueness(cityDTO);
 
-        if (!userService.canModifyCity(existingCity)) {
-            throw new SecurityException("У вас нет разрешения на изменение этого City");
+            if (!userService.canModifyCity(existingCity)) {
+                throw new SecurityException("У вас нет разрешения на изменение этого City");
+            }
+
+            Coordinates savedCoordinates = coordinatesService
+                    .createOrUpdateCoordinatesForCity(cityDTO.getCoordinates());
+            Human savedHuman = humanService
+                    .createOrUpdateHumanForCity(cityDTO.getGovernor());
+
+            City updatedCity = entityMapper.toCityEntity(cityDTO, savedCoordinates, savedHuman);
+
+            updatedCity.setId(existingCity.getId()); // id – const
+            updatedCity.setCreatedBy(existingCity.getCreatedBy()); // creator – const
+            updatedCity.setCreationDate(existingCity.getCreationDate()); // // creation date – const
+
+            City savedCity = cityRepository.save(updatedCity);
+            auditService.auditCity(savedCity, AuditOperation.UPDATE);
+
+            return entityMapper.toCityDTO(savedCity);
+        } catch  (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
-
-        Coordinates savedCoordinates = coordinatesService
-                .createOrUpdateCoordinatesForCity(cityDTO.getCoordinates());
-        Human savedHuman = humanService
-                .createOrUpdateHumanForCity(cityDTO.getGovernor());
-
-        City updatedCity = entityMapper.toCityEntity(cityDTO, savedCoordinates, savedHuman);
-
-        updatedCity.setId(existingCity.getId()); // id – const
-        updatedCity.setCreatedBy(existingCity.getCreatedBy()); // creator – const
-        updatedCity.setCreationDate(existingCity.getCreationDate()); // // creation date – const
-
-        City savedCity = cityRepository.save(updatedCity);
-        auditService.auditCity(savedCity, AuditOperation.UPDATE);
-
-        return entityMapper.toCityDTO(savedCity);
     }
 
     @Transactional
@@ -174,22 +185,46 @@ public class CityService {
         }
     }
 
-    private void validateCityUniqueness(CityDTO cityDTO) {
-        boolean isNameDuplicate = cityRepository.findByFilters(cityDTO.getName(), null, Pageable.unpaged())
-                .stream()
-                .anyMatch(city -> city.getCoordinates().getId().equals(cityDTO.getCoordinates().getId()));
+//    private void validateCityUniqueness(CityDTO cityDTO) {
+//        boolean isNameDuplicate = cityRepository.findByFilters(cityDTO.getName(), null, Pageable.unpaged())
+//                .stream()
+//                .anyMatch(city -> city.getCoordinates().getId().equals(cityDTO.getCoordinates().getId()));
+//
+//        if (isNameDuplicate) {
+//            throw new IllegalArgumentException("Город с таким именем и координатами уже существует");
+//        }
+//
+//        boolean isNameGovernorDuplicate = cityRepository.findByFilters(cityDTO.getName(),
+//                        cityDTO.getGovernor().getName(),
+//                        Pageable.unpaged())
+//                .stream()
+//                .anyMatch(city -> city.getGovernor().getId().equals(cityDTO.getGovernor().getId()));
+//
+//        if (isNameGovernorDuplicate) {
+//            throw new IllegalArgumentException("Город с таким именем и губернатором уже существует");
+//        }
+//    }
 
-        if (isNameDuplicate) {
+    private void validateCityUniqueness(CityDTO cityDTO) {
+        List<City> citiesByNameAndCoordinates = cityRepository.findByNameAndCoordinatesForUpdate(
+                cityDTO.getName(),
+                cityDTO.getCoordinates().getX(),
+                cityDTO.getCoordinates().getY()
+        );
+
+        if (!citiesByNameAndCoordinates.isEmpty()) {
             throw new IllegalArgumentException("Город с таким именем и координатами уже существует");
         }
 
-        boolean isNameGovernorDuplicate = cityRepository.findByFilters(cityDTO.getName(),
-                        cityDTO.getGovernor().getName(),
-                        Pageable.unpaged())
-                .stream()
-                .anyMatch(city -> city.getGovernor().getId().equals(cityDTO.getGovernor().getId()));
+        List<City> citiesByNameAndGovernor = cityRepository.findByNameAndGovernorForUpdate(
+                cityDTO.getName(),
+                cityDTO.getGovernor().getName(),
+                cityDTO.getGovernor().getAge(),
+                cityDTO.getGovernor().getHeight(),
+                cityDTO.getGovernor().getBirthday()
+        );
 
-        if (isNameGovernorDuplicate) {
+        if (!citiesByNameAndGovernor.isEmpty()) {
             throw new IllegalArgumentException("Город с таким именем и губернатором уже существует");
         }
     }

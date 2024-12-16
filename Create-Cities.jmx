@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="CityScape">
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Create Cities">
+        <intProp name="ThreadGroup.num_threads">5</intProp>
+        <intProp name="ThreadGroup.ramp_time">5</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create City 1">
+          <intProp name="HTTPSampler.connect_timeout">20000</intProp>
+          <intProp name="HTTPSampler.response_timeout">20000</intProp>
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.protocol">HTTP</stringProp>
+          <stringProp name="HTTPSampler.path">/api/cities</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;name&quot;: &quot;City One&quot;,&#xd;
+    &quot;area&quot;: &quot;100&quot;,&#xd;
+    &quot;population&quot;: &quot;50000&quot;,&#xd;
+    &quot;climate&quot;: &quot;OCEANIC&quot;,&#xd;
+    &quot;government&quot;: &quot;REPUBLIC&quot;,&#xd;
+    &quot;coordinates&quot;: {&#xd;
+      &quot;x&quot;: &quot;110&quot;,&#xd;
+      &quot;y&quot;: &quot;60&quot;&#xd;
+    },&#xd;
+    &quot;capital&quot;: true,&#xd;
+    &quot;metersAboveSeaLevel&quot;: &quot;150&quot;,&#xd;
+    &quot;standardOfLiving&quot;: &quot;VERY_HIGH&quot;,&#xd;
+    &quot;establishmentDate&quot;: &quot;2024-01-01T10:00:00.000Z&quot;,&#xd;
+    &quot;governor&quot;: {&#xd;
+      &quot;name&quot;: &quot;John Smith&quot;,&#xd;
+      &quot;age&quot;: &quot;44&quot;,&#xd;
+      &quot;height&quot;: &quot;183&quot;,&#xd;
+      &quot;birthday&quot;: &quot;1979-02-15T00:00:00.000Z&quot;&#xd;
+    },&#xd;
+    &quot;useExistingCoordinates&quot;: false,&#xd;
+    &quot;useExistingGovernor&quot;: false&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree Create City">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report Create City">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create City 2">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.path">/api/cities</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;name&quot;: &quot;City Two&quot;,&#xd;
+    &quot;area&quot;: &quot;200&quot;,&#xd;
+    &quot;population&quot;: &quot;120000&quot;,&#xd;
+    &quot;climate&quot;: &quot;STEPPE&quot;,&#xd;
+    &quot;government&quot;: &quot;MATRIARCHY&quot;,&#xd;
+    &quot;coordinates&quot;: {&#xd;
+      &quot;x&quot;: &quot;220&quot;,&#xd;
+      &quot;y&quot;: &quot;100&quot;&#xd;
+    },&#xd;
+    &quot;capital&quot;: false,&#xd;
+    &quot;metersAboveSeaLevel&quot;: &quot;120&quot;,&#xd;
+    &quot;standardOfLiving&quot;: &quot;HIGH&quot;,&#xd;
+    &quot;establishmentDate&quot;: &quot;2023-05-15T12:30:00.000Z&quot;,&#xd;
+    &quot;governor&quot;: {&#xd;
+      &quot;name&quot;: &quot;Jane Doe&quot;,&#xd;
+      &quot;age&quot;: &quot;54&quot;,&#xd;
+      &quot;height&quot;: &quot;170&quot;,&#xd;
+      &quot;birthday&quot;: &quot;1974-09-20T00:00:00.000Z&quot;&#xd;
+    },&#xd;
+    &quot;useExistingCoordinates&quot;: false,&#xd;
+    &quot;useExistingGovernor&quot;: false&#xd;
+  }</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create City 3">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.path">/api/cities</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;name&quot;: &quot;City Three&quot;,&#xd;
+    &quot;area&quot;: &quot;10&quot;,&#xd;
+    &quot;population&quot;: &quot;75000&quot;,&#xd;
+    &quot;climate&quot;: &quot;RAIN_FOREST&quot;,&#xd;
+    &quot;government&quot;: &quot;JUNTA&quot;,&#xd;
+    &quot;coordinates&quot;: {&#xd;
+      &quot;x&quot;: &quot;159&quot;,&#xd;
+      &quot;y&quot;: &quot;75&quot;&#xd;
+    },&#xd;
+    &quot;capital&quot;: true,&#xd;
+    &quot;metersAboveSeaLevel&quot;: &quot;200&quot;,&#xd;
+    &quot;standardOfLiving&quot;: &quot;MEDIUM&quot;,&#xd;
+    &quot;establishmentDate&quot;: &quot;2022-03-10T14:45:00.000Z&quot;,&#xd;
+    &quot;governor&quot;: {&#xd;
+      &quot;name&quot;: &quot;Carlos Garcia&quot;,&#xd;
+      &quot;age&quot;: &quot;80&quot;,&#xd;
+      &quot;height&quot;: &quot;177&quot;,&#xd;
+      &quot;birthday&quot;: &quot;1964-08-12T00:00:00.000Z&quot;&#xd;
+    },&#xd;
+    &quot;useExistingCoordinates&quot;: false,&#xd;
+    &quot;useExistingGovernor&quot;: false&#xd;
+  }</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create City 4">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.path">/api/cities</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;name&quot;: &quot;City Four&quot;,&#xd;
+    &quot;area&quot;: &quot;180&quot;,&#xd;
+    &quot;population&quot;: &quot;95000&quot;,&#xd;
+    &quot;climate&quot;: &quot;POLAR_ICECAP&quot;,&#xd;
+    &quot;government&quot;: &quot;PLUTOCRACY&quot;,&#xd;
+    &quot;coordinates&quot;: {&#xd;
+      &quot;x&quot;: &quot;189&quot;,&#xd;
+      &quot;y&quot;: &quot;99&quot;&#xd;
+    },&#xd;
+    &quot;capital&quot;: false,&#xd;
+    &quot;metersAboveSeaLevel&quot;: &quot;300&quot;,&#xd;
+    &quot;standardOfLiving&quot;: &quot;NIGHTMARE&quot;,&#xd;
+    &quot;establishmentDate&quot;: &quot;2021-11-01T08:15:00.000Z&quot;,&#xd;
+    &quot;governor&quot;: {&#xd;
+      &quot;name&quot;: &quot;Emily White&quot;,&#xd;
+      &quot;age&quot;: &quot;40&quot;,&#xd;
+      &quot;height&quot;: &quot;166&quot;,&#xd;
+      &quot;birthday&quot;: &quot;1984-06-25T00:00:00.000Z&quot;&#xd;
+    },&#xd;
+    &quot;useExistingCoordinates&quot;: false,&#xd;
+    &quot;useExistingGovernor&quot;: false&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create City 5">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.path">/api/cities</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;name&quot;: &quot;City Five&quot;,&#xd;
+    &quot;area&quot;: &quot;90&quot;,&#xd;
+    &quot;population&quot;: &quot;45000&quot;,&#xd;
+    &quot;climate&quot;: &quot;STEPPE&quot;,&#xd;
+    &quot;government&quot;: &quot;REPUBLIC&quot;,&#xd;
+    &quot;coordinates&quot;: {&#xd;
+      &quot;x&quot;: &quot;80&quot;,&#xd;
+      &quot;y&quot;: &quot;45&quot;&#xd;
+    },&#xd;
+    &quot;capital&quot;: false,&#xd;
+    &quot;metersAboveSeaLevel&quot;: &quot;180&quot;,&#xd;
+    &quot;standardOfLiving&quot;: &quot;HIGH&quot;,&#xd;
+    &quot;establishmentDate&quot;: &quot;2020-02-20T09:30:00.000Z&quot;,&#xd;
+    &quot;governor&quot;: {&#xd;
+      &quot;name&quot;: &quot;Michael Brown&quot;,&#xd;
+      &quot;age&quot;: &quot;55&quot;,&#xd;
+      &quot;height&quot;: &quot;108&quot;,&#xd;
+      &quot;birthday&quot;: &quot;1969-10-01T00:00:00.000Z&quot;&#xd;
+    },&#xd;
+    &quot;useExistingCoordinates&quot;: false,&#xd;
+    &quot;useExistingGovernor&quot;: false&#xd;
+  }</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Update  and Delete Cities">
+        <intProp name="ThreadGroup.num_threads">3</intProp>
+        <intProp name="ThreadGroup.ramp_time">3</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <stringProp name="LoopController.loops">2</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Update City 1">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.path"> /api/cities/1</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;name&quot;: &quot;City Three&quot;,&#xd;
+    &quot;area&quot;: &quot;150&quot;,&#xd;
+    &quot;population&quot;: &quot;75000&quot;,&#xd;
+    &quot;climate&quot;: &quot;RAIN_FOREST&quot;,&#xd;
+    &quot;government&quot;: &quot;JUNTA&quot;,&#xd;
+    &quot;coordinates&quot;: {&#xd;
+      &quot;x&quot;: &quot;150&quot;,&#xd;
+      &quot;y&quot;: &quot;75&quot;&#xd;
+    },&#xd;
+    &quot;capital&quot;: true,&#xd;
+    &quot;metersAboveSeaLevel&quot;: &quot;200&quot;,&#xd;
+    &quot;standardOfLiving&quot;: &quot;MEDIUM&quot;,&#xd;
+    &quot;establishmentDate&quot;: &quot;2022-03-10T14:45:00.000Z&quot;,&#xd;
+    &quot;governor&quot;: {&#xd;
+      &quot;name&quot;: &quot;Carlos Garcia&quot;,&#xd;
+      &quot;age&quot;: &quot;60&quot;,&#xd;
+      &quot;height&quot;: &quot;175&quot;,&#xd;
+      &quot;birthday&quot;: &quot;1964-08-12T00:00:00.000Z&quot;&#xd;
+    },&#xd;
+    &quot;useExistingCoordinates&quot;: false,&#xd;
+    &quot;useExistingGovernor&quot;: false&#xd;
+  }</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Update City 2">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.path"> /api/cities/2</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;name&quot;: &quot;City Two&quot;,&#xd;
+    &quot;area&quot;: &quot;200&quot;,&#xd;
+    &quot;population&quot;: &quot;120000&quot;,&#xd;
+    &quot;climate&quot;: &quot;STEPPE&quot;,&#xd;
+    &quot;government&quot;: &quot;MATRIARCHY&quot;,&#xd;
+    &quot;coordinates&quot;: {&#xd;
+      &quot;x&quot;: &quot;200&quot;,&#xd;
+      &quot;y&quot;: &quot;100&quot;&#xd;
+    },&#xd;
+    &quot;capital&quot;: false,&#xd;
+    &quot;metersAboveSeaLevel&quot;: &quot;120&quot;,&#xd;
+    &quot;standardOfLiving&quot;: &quot;HIGH&quot;,&#xd;
+    &quot;establishmentDate&quot;: &quot;2023-05-15T12:30:00.000Z&quot;,&#xd;
+    &quot;governor&quot;: {&#xd;
+      &quot;name&quot;: &quot;Jane Doe&quot;,&#xd;
+      &quot;age&quot;: &quot;50&quot;,&#xd;
+      &quot;height&quot;: &quot;170&quot;,&#xd;
+      &quot;birthday&quot;: &quot;1974-09-20T00:00:00.000Z&quot;&#xd;
+    },&#xd;
+    &quot;useExistingCoordinates&quot;: false,&#xd;
+    &quot;useExistingGovernor&quot;: false&#xd;
+  }</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Update City 3">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.path"> /api/cities/3</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;name&quot;: &quot;City Four&quot;,&#xd;
+    &quot;area&quot;: &quot;180&quot;,&#xd;
+    &quot;population&quot;: &quot;95000&quot;,&#xd;
+    &quot;climate&quot;: &quot;POLAR_ICECAP&quot;,&#xd;
+    &quot;government&quot;: &quot;PLUTOCRACY&quot;,&#xd;
+    &quot;coordinates&quot;: {&#xd;
+      &quot;x&quot;: &quot;180&quot;,&#xd;
+      &quot;y&quot;: &quot;90&quot;&#xd;
+    },&#xd;
+    &quot;capital&quot;: false,&#xd;
+    &quot;metersAboveSeaLevel&quot;: &quot;300&quot;,&#xd;
+    &quot;standardOfLiving&quot;: &quot;NIGHTMARE&quot;,&#xd;
+    &quot;establishmentDate&quot;: &quot;2021-11-01T08:15:00.000Z&quot;,&#xd;
+    &quot;governor&quot;: {&#xd;
+      &quot;name&quot;: &quot;Emily White&quot;,&#xd;
+      &quot;age&quot;: &quot;40&quot;,&#xd;
+      &quot;height&quot;: &quot;165&quot;,&#xd;
+      &quot;birthday&quot;: &quot;1984-06-25T00:00:00.000Z&quot;&#xd;
+    },&#xd;
+    &quot;useExistingCoordinates&quot;: false,&#xd;
+    &quot;useExistingGovernor&quot;: false&#xd;
+  },&#xd;
+  {&#xd;
+    &quot;name&quot;: &quot;City Five&quot;,&#xd;
+    &quot;area&quot;: &quot;90&quot;,&#xd;
+    &quot;population&quot;: &quot;45000&quot;,&#xd;
+    &quot;climate&quot;: &quot;STEPPE&quot;,&#xd;
+    &quot;government&quot;: &quot;REPUBLIC&quot;,&#xd;
+    &quot;coordinates&quot;: {&#xd;
+      &quot;x&quot;: &quot;90&quot;,&#xd;
+      &quot;y&quot;: &quot;45&quot;&#xd;
+    }</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Delete City 1">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.path">/api/cities/1</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">DELETE</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Delete City 2">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.path">/api/cities/2</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">DELETE</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Delete City 3">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.path">/api/cities/3</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">DELETE</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report Update and Delete City">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree Update and Delete City">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Import Operation">
+        <intProp name="ThreadGroup.num_threads">2</intProp>
+        <intProp name="ThreadGroup.ramp_time">2</intProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Import">
+          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.path">/api/import</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
+            <collectionProp name="HTTPFileArgs.files">
+              <elementProp name="cities.json" elementType="HTTPFileArg">
+                <stringProp name="File.mimetype">application/json</stringProp>
+                <stringProp name="File.path">cities.json</stringProp>
+                <stringProp name="File.paramname">file</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager">
+        <collectionProp name="HeaderManager.headers">
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Content-Type</stringProp>
+            <stringProp name="Header.value">application/json</stringProp>
+          </elementProp>
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Authorization</stringProp>
+            <stringProp name="Header.value">Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJVU0VSIiwic3ViIjoidGVzdFVzZXIxIiwiaWF0IjoxNzM0MzE4NDk3LCJleHAiOjE3MzQzNTQ0OTd9.19MnFUCE2b38t6uNShzhOgCMyhIfFKSu0QD87sHtbMQ</stringProp>
+          </elementProp>
+        </collectionProp>
+      </HeaderManager>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

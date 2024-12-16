@@ -17,6 +17,7 @@ import ru.itmo.cs.service.CoordinatesService;
 import ru.itmo.cs.service.HumanService;
 import ru.itmo.cs.service.UserService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Component
@@ -113,7 +114,7 @@ public class EntityMapper {
         city.setStandardOfLiving(cityDTO.getStandardOfLiving());
         city.setEstablishmentDate(cityDTO.getEstablishmentDate());
         city.setGovernor(governor);
-        // `createdBy` и `creationDate` не меняются при создании/обновлении
+        city.setCreationDate(cityDTO.getCreationDate() != null ? cityDTO.getCreationDate() : LocalDate.now());
         return city;
     }
 

@@ -16,5 +16,6 @@ public class ImportOperationDTO {
     private LocalDateTime timestamp;
     private int objectsAdded;
     private String username;
+    private String fileDownloadUrl;
 }
 

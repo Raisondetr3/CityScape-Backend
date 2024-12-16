@@ -52,6 +52,7 @@ public class CityController {
 
     @PostMapping
     public ResponseEntity<CityDTO> createCity(@RequestBody @Valid CityDTO cityDTO) {
+        System.out.println("Полученные данные: " + cityDTO);
         CityDTO createdCity = cityService.createCity(cityDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCity);
     }
@@ -99,6 +100,3 @@ public class CityController {
         return ResponseEntity.ok(distance);
     }
 }
-
-
-

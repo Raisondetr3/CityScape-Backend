@@ -138,13 +138,13 @@ class CityServiceTest {
         when(cityRepository.findByFilters("Test City", "John Doe", Pageable.unpaged()))
                 .thenReturn(emptyPage);
 
-        // Настройка других моков
         when(userService.getCurrentUser()).thenReturn(user);
         when(coordinatesService.createOrUpdateCoordinatesForCity(coordinatesDTO)).thenReturn(coordinates);
         when(humanService.createOrUpdateHumanForCity(humanDTO)).thenReturn(human);
         when(entityMapper.toCityEntity(cityDTO, coordinates, human)).thenReturn(city);
-        when(cityRepository.save(city)).thenReturn(city);
-        when(entityMapper.toCityDTO(city)).thenReturn(cityDTO);
+        when(cityRepository.saveAndFlush(any(City.class))).thenReturn(city);
+        when(entityMapper.toCityDTO(any(City.class))).thenReturn(cityDTO);
+        lenient().when(entityMapper.toCityDTO(null)).thenReturn(null);
 
         // Act
         CityDTO result = cityService.createCity(cityDTO);
@@ -465,7 +465,7 @@ class CityServiceTest {
         when(coordinatesService.createOrUpdateCoordinatesForCity(coordinatesDTO)).thenReturn(coordinates);
         when(humanService.createOrUpdateHumanForCity(humanDTO)).thenReturn(human);
         when(entityMapper.toCityEntity(cityDTO, coordinates, human)).thenReturn(city);
-        when(cityRepository.save(city)).thenReturn(city);
+        when(cityRepository.saveAndFlush(any(City.class))).thenReturn(city);
         when(entityMapper.toCityDTO(city)).thenReturn(cityDTO);
 
         // Act

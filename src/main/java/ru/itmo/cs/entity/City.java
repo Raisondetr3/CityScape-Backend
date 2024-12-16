@@ -1,6 +1,5 @@
 package ru.itmo.cs.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -38,8 +37,8 @@ public class City {
     @JoinColumn(name = "coordinate_id")
     private Coordinates coordinates;
 
-    @Column(nullable = false)
-    private LocalDate creationDate = LocalDate.now();
+    @Column(name = "creationdate")
+    private LocalDate creationDate;
 
     @NotNull
     @Column(name = "area")
@@ -73,7 +72,6 @@ public class City {
     @JoinColumn(name = "governor_id")
     private Human governor;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;

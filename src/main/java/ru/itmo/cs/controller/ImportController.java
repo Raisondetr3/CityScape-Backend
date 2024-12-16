@@ -26,7 +26,7 @@ public class ImportController {
                 throw new FileReadException("Ошибка чтения файла: файл пустой");
             }
             String jsonData = new String(file.getBytes(), StandardCharsets.UTF_8);
-            ImportOperationDTO importOperationDTO = importService.importCities(jsonData);
+            ImportOperationDTO importOperationDTO = importService.importCities(file, jsonData);
             return ResponseEntity.ok(importOperationDTO);
         } catch (IOException e) {
             throw new FileReadException("Ошибка чтения файла: " + e.getMessage());
