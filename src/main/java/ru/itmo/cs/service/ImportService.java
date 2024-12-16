@@ -42,12 +42,18 @@ public class ImportService {
     private final UserService userService;
     private final MinIOService minIOService;
 
+    private final DbTransactionResource dbResource;
+    private final MinioTransactionResource minioResource;
+
     @Value("${minio.bucketName}")
     private String bucketName;
 
-    @Transactional(rollbackFor = Exception.class)
     public synchronized ImportOperationDTO importCities(MultipartFile file, String jsonData) throws IOException {
         User currentUser = userService.getCurrentUser();
+
+        String fileName = "import-" + UUID.randomUUID() + ".json";
+        minioResource.setFileData(fileName, file.getBytes());
+
         ImportOperation importOperation = new ImportOperation();
         importOperation.setStatus(ImportStatus.IN_PROGRESS);
         importOperation.setTimestamp(LocalDateTime.now());
@@ -60,10 +66,10 @@ public class ImportService {
         int failedImports = 0;
 
         try {
-            String fileName = "import-" + UUID.randomUUID() + ".json";
-            log.info("Uploading file to MinIO with name: {}", fileName);
-            minIOService.uploadFile(fileName, file.getBytes());
-            importOperation.setFileName(fileName);
+            dbResource.prepare();
+            minioResource.prepare();
+
+            importOperationRepository.save(importOperation);
 
             List<CityDTO> cities = parseJsonToCityDTOList(jsonData);
             log.info("Parsed {} cities from JSON data.", cities.size());
@@ -88,19 +94,33 @@ public class ImportService {
                 importOperation.setStatus(ImportStatus.PARTIAL_SUCCESS);
             }
 
+            importOperation.setFileName(fileName);
             importOperation.setObjectsAdded(successfulImports);
-            log.info("Import operation completed: {} cities added, {} failed.", successfulImports, failedImports);
-        } catch (RuntimeException e) {
-            importOperation.setStatus(ImportStatus.FAILURE);
-            importOperation.setObjectsAdded(0);
-            log.error("Error during import operation: {}", e.getMessage(), e);
-            throw e;
-        } finally {
-            log.info("Saving final import operation with status: {}", importOperation.getStatus());
-            importOperationRepository.save(importOperation);
-        }
 
-        return entityMapper.toImportOperationDTO(importOperation);
+            importOperationRepository.save(importOperation);
+
+            dbResource.commit();
+            minioResource.commit();
+
+            log.info("Import operation completed: {} cities added, {} failed.", successfulImports, failedImports);
+            return entityMapper.toImportOperationDTO(importOperation);
+        } catch (Exception e) {
+            log.error("Error during import operation: {}", e.getMessage(), e);
+
+            try {
+                dbResource.rollback();
+            } catch (Exception ex) {
+                log.error("Error rolling back DB transaction: {}", ex.getMessage(), ex);
+            }
+
+            try {
+                minioResource.rollback();
+            } catch (Exception ex) {
+                log.error("Error rolling back MinIO operation: {}", ex.getMessage(), ex);
+            }
+
+            throw new RuntimeException("Импорт не выполнен: " + e.getMessage(), e);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -119,7 +139,7 @@ public class ImportService {
                                             .method(Method.GET)
                                             .build()
                             );
-                            dto.setFileDownloadUrl(fileDownloadUrl);
+                            dto.setFileDownloadUrl(getPresignedUrl(operation.getFileName()));
                         } catch (ErrorResponseException | InsufficientDataException | InternalException |
                                  InvalidKeyException | InvalidResponseException | IOException |
                                  NoSuchAlgorithmException | XmlParserException | ServerException e) {
@@ -134,6 +154,9 @@ public class ImportService {
                 .toList();
     }
 
+    private String getPresignedUrl(String fileName) {
+        return minioResource.getMinIOService().getPresignedUrl(fileName);
+    }
 
     private List<CityDTO> parseJsonToCityDTOList(String jsonData) {
         try {

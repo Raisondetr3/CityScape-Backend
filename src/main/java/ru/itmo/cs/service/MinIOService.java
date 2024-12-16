@@ -2,6 +2,7 @@ package ru.itmo.cs.service;
 
 import io.minio.*;
 import io.minio.errors.*;
+import io.minio.http.Method;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,51 @@ public class MinIOService {
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
                  InvalidResponseException | IOException | NoSuchAlgorithmException | XmlParserException | ServerException e) {
             throw new RuntimeException("Ошибка при проверке/создании корзины в MinIO: " + e.getMessage(), e);
+        } catch (io.minio.errors.ErrorResponseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void renameObject(String sourceObject, String targetObject) {
+        try {
+            minioClient.copyObject(
+                    CopyObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(targetObject)
+                            .source(CopySource.builder()
+                                    .bucket(bucketName)
+                                    .object(sourceObject)
+                                    .build())
+                            .build());
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder().bucket(bucketName).object(sourceObject).build());
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка при переименовании файла в MinIO: " + e.getMessage(), e);
+        }
+    }
+
+    public void deleteObject(String objectName) {
+        try {
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder().bucket(bucketName).object(objectName).build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Ошибка при удалении файла в MinIO: " + e.getMessage(), e);
+        }
+    }
+
+    public String getPresignedUrl(String fileName) {
+        try {
+            return minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .bucket(bucketName)
+                            .object(fileName)
+                            .method(Method.GET)
+                            .build()
+            );
+        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
+                 InvalidResponseException | IOException | NoSuchAlgorithmException | XmlParserException | ServerException e) {
+            throw new RuntimeException("Ошибка при получении ссылки на файл из MinIO: " + e.getMessage(), e);
         } catch (io.minio.errors.ErrorResponseException e) {
             throw new RuntimeException(e);
         }

@@ -162,12 +162,13 @@ public class EntityMapper {
         return coordinatesAudit;
     }
 
-    public ImportOperation toImportOperationEntity(User user, ImportStatus status, int objectsAdded) {
+    public ImportOperation toImportOperationEntity(User user, ImportStatus status, int objectsAdded, String fileName) {
         ImportOperation operation = new ImportOperation();
         operation.setUser(user);
         operation.setStatus(status);
         operation.setTimestamp(LocalDateTime.now());
         operation.setObjectsAdded(objectsAdded);
+        operation.setFileName(fileName);
         return operation;
     }
 }
