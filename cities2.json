@@ -1,0 +1,117 @@
+[
+  {
+    "name": "City Six",
+    "area": "100",
+    "population": "50000",
+    "climate": "OCEANIC",
+    "government": "REPUBLIC",
+    "coordinates": {
+      "x": "100",
+      "y": "50"
+    },
+    "capital": true,
+    "metersAboveSeaLevel": "150",
+    "standardOfLiving": "VERY_HIGH",
+    "establishmentDate": "2024-01-01T10:00:00.000Z",
+    "governor": {
+      "name": "John Smith",
+      "age": "45",
+      "height": "182",
+      "birthday": "1979-02-15T00:00:00.000Z"
+    },
+    "useExistingCoordinates": false,
+    "useExistingGovernor": false
+  },
+  {
+    "name": "City Seven",
+    "area": "200",
+    "population": "120000",
+    "climate": "STEPPE",
+    "government": "MATRIARCHY",
+    "coordinates": {
+      "x": "200",
+      "y": "100"
+    },
+    "capital": false,
+    "metersAboveSeaLevel": "120",
+    "standardOfLiving": "HIGH",
+    "establishmentDate": "2023-05-15T12:30:00.000Z",
+    "governor": {
+      "name": "Jane Doe",
+      "age": "50",
+      "height": "170",
+      "birthday": "1974-09-20T00:00:00.000Z"
+    },
+    "useExistingCoordinates": false,
+    "useExistingGovernor": false
+  },
+  {
+    "name": "City Eight",
+    "area": "150",
+    "population": "75000",
+    "climate": "RAIN_FOREST",
+    "government": "JUNTA",
+    "coordinates": {
+      "x": "150",
+      "y": "75"
+    },
+    "capital": true,
+    "metersAboveSeaLevel": "200",
+    "standardOfLiving": "MEDIUM",
+    "establishmentDate": "2022-03-10T14:45:00.000Z",
+    "governor": {
+      "name": "Carlos Garcia",
+      "age": "60",
+      "height": "175",
+      "birthday": "1964-08-12T00:00:00.000Z"
+    },
+    "useExistingCoordinates": false,
+    "useExistingGovernor": false
+  },
+  {
+    "name": "City Nine",
+    "area": "180",
+    "population": "95000",
+    "climate": "POLAR_ICECAP",
+    "government": "PLUTOCRACY",
+    "coordinates": {
+      "x": "180",
+      "y": "90"
+    },
+    "capital": false,
+    "metersAboveSeaLevel": "300",
+    "standardOfLiving": "NIGHTMARE",
+    "establishmentDate": "2021-11-01T08:15:00.000Z",
+    "governor": {
+      "name": "Emily White",
+      "age": "40",
+      "height": "165",
+      "birthday": "1984-06-25T00:00:00.000Z"
+    },
+    "useExistingCoordinates": false,
+    "useExistingGovernor": false
+  },
+  {
+    "name": "City Ten",
+    "area": "90",
+    "population": "45000",
+    "climate": "STEPPE",
+    "government": "REPUBLIC",
+    "coordinates": {
+      "x": "90",
+      "y": "45"
+    },
+    "capital": false,
+    "metersAboveSeaLevel": "180",
+    "standardOfLiving": "HIGH",
+    "establishmentDate": "2020-02-20T09:30:00.000Z",
+    "governor": {
+      "name": "Michael Brown",
+      "age": "55",
+      "height": "178",
+      "birthday": "1969-10-01T00:00:00.000Z"
+    },
+    "useExistingCoordinates": false,
+    "useExistingGovernor": false
+  }
+]

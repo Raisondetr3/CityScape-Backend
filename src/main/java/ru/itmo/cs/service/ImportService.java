@@ -99,6 +99,10 @@ public class ImportService {
 
             importOperationRepository.save(importOperation);
 
+//            if (true) {
+//                throw new RuntimeException("test test test");
+//            }
+
             dbResource.commit();
             minioResource.commit();
 
